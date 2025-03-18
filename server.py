@@ -22,7 +22,7 @@ def add():
         othernames=request.form["othername"],
         address=request.form["houseaddress"],
         phonenumber=request.form["mobilenumber"]
-        id = 1
+        id = 2
         cur.execute( 
         '''INSERT INTO register 
         (id,surname, firstname,othernames,address,phonenumber) VALUES (%s,%s, %s,%s, %s,%s)''', 
@@ -34,7 +34,7 @@ def add():
         # close the cursor and connection 
         cur.close() 
         conn.close() 
-        return f'Data Successfully aded for {surname}'+'*'*5
+        return f'Data Successfully added for {surname}'+'*'*5
 
 @app.route('/')
 def home():
