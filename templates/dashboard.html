@@ -2,5 +2,111 @@
     <br>
     <br>
     <br>
-    <h3>Login Successful for {{ phonenumber1 }}</h3>'+'*'*5
+    <br>
+<!--    <style>
+        .sidebar {
+        margin: 0;
+        padding: 0;
+        width: 10%;
+        background-color: #f1f1f1;
+        position: fixed;
+        height: 100%;
+        overflow: auto;
+        }
+
+        /* Sidebar links */
+        .sidebar a {
+        display: block;
+        color: black;
+        padding: 16px;
+        text-decoration: none;
+        }
+
+        /* Active/current link */
+        .sidebar a.active {
+        background-color: #04AA6D;
+        color: white;
+        }
+
+        /* Links on mouse-over */
+        .sidebar a:hover:not(.active) {
+        background-color: #555;
+        color: white;
+        }
+
+        /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+        div.content {
+        margin-left: 10%;
+        padding: 1px 16px;
+        height: 1000px;
+        }
+
+        /* On screens that are less than 700px wide, make the sidebar into a topbar */
+        @media screen and (max-width: 700px) {
+        .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+        .sidebar a {float: left;}
+        div.content {margin-left: 0;}
+        }
+
+        /* Style page content */
+        .main {
+        margin-left: 10%; /* Same as the width of the sidebar */
+        padding: 0px 10px;
+        }
+
+        /* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+        @media screen and (max-width: 400px) {
+        .sidebar a {
+            text-align: center;
+            float: none;
+        }
+        
+        }
+        
+    </style>
+-->
+<!--    <div class="sidebar">
+        <a class="active" href="#dues_status">Estate Dues Status</a>
+        <a href="#neigbours">My Neigbours</a>
+    </div>
+-->
+    <section id="dues_status">
+    <div class="main">
+    <h2>Hello, </h2>
+    <table class="table table-borderless">
+        <tr><td colspan="4" align="center"><h5>{{ customerdata["title"]+' '+ customerdata["surname"]+', '+customerdata["firstname"] }}</h5></td></tr>
+        <tr><td colspan="4" align="center"><h6>{{ customerdata["address"] }}</h6></td></tr>
+        <tr><td colspan="4" align="center"><h6><u>Estate Dues 2025</u></h6></td></tr>
+        <tr><td>Amount To Pay : </td><td></td><td>=N= {{ customerdata["apartmenttypeamount"] }}</td><td></td></tr>
+        <tr><td class="fw-normal">Apartment Type : </td><td class="fw-normal"></td><td>{{ customerdata["apartmenttype"] }}</td><td></td></tr>
+        <tr><td colspan="4" align="center"><h6><u>Payment History</u></h6></td></tr>
+        {% for data in customerdata["payments"] %}
+            <tr><td class="fw-normal">Payment </td><td class="fw-normal">{{ data[2] }}</td><td class="fw-normal">=N= {{ data[3] }}</td><td>{{ data[4] }}</td></tr>
+        {% endfor%}
+        
+        <tr><td class="fw-normal">Total Paid: </td><td></td><td class="fw-normal">=N={{ customerdata["totalpaid"] }}</td></tr>
+        {% if customerdata["outstandingpay"] %}
+            <tr><td>Balance to Pay: </td><td></td><td><font color='red'><b>=N={{ customerdata["balancetopay"] }}</b></font></td></tr>
+        {% else %}
+            <tr><td>Balance to Pay: </td><td></td><td><font color='blue'><b>=N={{ customerdata["balancetopay"] }}</b></font></td></font></td></tr>
+        {% endif%}
+        <!--<tr><td colspan="4" align="center"><h6><u>Other Fees (PSP Fees)</u></h6></td></tr>-->
+
+    </table>
+</div>
+</section>
+<!--<section id="neigbours">
+<div class="main">
+    <table class="table table-bordered">
+        <tr><td colspan="2" align="center"><h4>House Structure</h4></td></tr>
+        <tr><td><h5>LandLord : </td><td>Dapo Olaoye</h5></td></tr>
+        <tr><td><h5>Tenant 1: </td><td>Daniel</h5></td></tr>
+        <tr><td><h5>Tenant 2: </td><td>Nil</h5></td></tr>
+    </table>
+</div>
+</section>-->
 {% include "footer.html" %}

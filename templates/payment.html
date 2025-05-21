@@ -1,0 +1,61 @@
+{% include "header.html" %}
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h3>Register Your Dues / Levies Payment Here</h3>
+</div>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <form action="{{ url_for('add_payment') }}" method="POST">
+                                <div class="mb-3 mt-3">
+                                    <label for="phonenumber" class="form-label">Phone Number:</label>
+                                    <input type="text" class="form-control" id="phonenumber" placeholder="Enter Phone Number" name="phonenumber" required>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="description" class="form-label">Description:</label>
+                                    <input type="text" class="form-control" id="description" placeholder="Enter Description" name="description" required>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="amount" class="form-label">Amount:</label>
+                                    <input type="text" class="form-control" id="amount" placeholder="Enter Amount" name="amount" required>
+                                    <script>
+                                        var inputField = document.querySelector('#amount')
+
+                                           inputField.oninput = function(){
+                                          var removechar = this.value.replace(/[^0-9\.]/g, '') // this is to remove alphabets and special character
+                                          var removedot = removechar.replace(/\./g,'') // this is to remove DOT
+                                          this.value = removedot
+                                          var formattedNumber = this.value.replace(/\B(?=(\d{3})+(?!\d))/g,",")
+                                          this.value = formattedNumber
+                                         }
+                                    </script>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    
+                                    <label for="paymentdate">Payment Date:</label><br>
+                                    <input type="date" id="paymentdate" name="paymentdate" placeholder="Enter Payment Date" required>
+
+
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="paymenttype" class="form-label">Payment Type: </label>
+                                </div>
+                                <select name="paymenttype" class="form-select mt-3">
+                                    <option>Cash</option>
+                                    <option>Transfer</option>
+                                  </select>
+                                <div class="mb-3 mt-3">
+                                    <label for="cashcollector" class="form-label">Cash Collected By</label>
+                                    <input type="text" class="form-control" id="cashcollector" placeholder="Enter Cash Collector Name" name="cashcollector" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% include "footer.html" %}
