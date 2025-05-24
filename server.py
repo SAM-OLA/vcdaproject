@@ -5,7 +5,7 @@ import datetime
 #from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 #from sqlalchemy import Integer, String, Float
 import sqlite3
-
+import ast
 
 app = Flask(__name__)
 
@@ -27,12 +27,13 @@ def add():
         othernames=request.form["othername"],
         address=request.form["houseaddress"],
         apartmenttype=request.form["apartmenttype"],
+        groupid='0',
         phonenumber=request.form["mobilenumber"]
     
         cur1.execute( 
         '''INSERT INTO register 
-        (surname, firstname,othernames,address,apartmenttype,phonenumber) VALUES (%s,%s, %s,%s, %s,%s)''', 
-        (surname, firstname,othernames,address,apartmenttype,phonenumber)) 
+        (surname, firstname,othernames,address,apartmenttype,groupid,phonenumber) VALUES (%s,%s, %s,%s, %s,%s,%s)''', 
+        (surname, firstname,othernames,address,apartmenttype,groupid,phonenumber)) 
         
         # Define the password to be hashed
         password = 'guest'
@@ -83,7 +84,7 @@ def login_confirm():
         phonenumber=request.form["phonenumber"],
         password=request.form["password"]
         dictdata = {}
-        
+         
         sql1 = 'SELECT * from users where username=%s and password=crypt(%s,password)'
         sql2 = 'SELECT * from register where phonenumber=%s'
         sql3 = 'SELECT * from paymenttransactions where phonenumber=%s'
@@ -170,10 +171,15 @@ def about_us():
 @app.route('/contactus')
 def contact_us():
     return render_template("contactus.html")
-
+ 
 @app.route('/register')
 def register():
     return render_template("register.html")
+
+@app.route('/edit_profile/<varprofile>')
+def edit_profile(varprofile):
+    resvarprofile = ast.literal_eval(varprofile) # this converst String Dict to Python Dict
+    return render_template("edit_profile.html", profile=resvarprofile)
 
 @app.route('/login')
 def login():

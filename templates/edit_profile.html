@@ -1,0 +1,53 @@
+{% include "header.html" %}
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h3>Residents Personal Information Form</h3>
+</div>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <form action="{{ url_for('add') }}" method="POST">
+                                <div class="mb-3 mt-3">
+                                    <label for="surname" class="form-label">Surname:</label>
+                                    <input type="text" class="form-control" id="surname" placeholder="Enter surname" name="surname" required value="{{ profile['surname'] }}">
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="firstname" class="form-label">Firstname:</label>
+                                    <input type="text" class="form-control" id="firstname" placeholder="Enter firstname" name="firstname" required value="{{ profile['firstname'] }}">
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="othername" class="form-label">Othernames:</label>
+                                    <input type="text" class="form-control" id="othername" placeholder="Enter othername" name="othername" required value="{{ profile['othernames'] }}">
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="houseaddress" class="form-label">House Address: (house no and street name)</label>
+                                    <input type="text" class="form-control" id="houseaddress" placeholder="Enter house address" name="houseaddress" required value="{{ profile['address'] }}">
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <label for="apartmenttype" class="form-label">Apartment Type: </label>
+                                </div>
+                                <select name="apartmenttype" class="form-select mt-3">
+                                    <option name="001">Bungalow</option>
+                                    <option name="002">Flats</option>
+                                    <option name="003">Duplex</option>
+                                    <option name="004">Single Room</option>
+                                    <option name="005">Mini Flats</option>
+                                    <option name="006">Self Contained</option>
+                                    <option name="007">Commercial</option>
+                                    <option name="008">Network Mast</option>
+                                  </select>
+                                <div class="mb-3 mt-3">
+                                    <label for="mobilenumber" class="form-label">Mobile Number: (whatsapp)</label>
+                                    <input type="text" class="form-control" id="mobilenumber" placeholder="Enter mobile number" name="mobilenumber" required disabled>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% include "footer.html" %}
