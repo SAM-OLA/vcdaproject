@@ -9,6 +9,20 @@
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="my-5">
                             <form action="{{ url_for('add_payment') }}" method="POST">
+                                <span class="border border-2 border border-info">
+                                <div class="form-check ms-2">
+                                    <input class="form-check-input" type="radio" name="transtype" id="transtype1" value="1">
+                                        <label class="form-check-label" for="transtype1">
+                                            Estate Dues
+                                        </label>
+                                </div>
+                                <div class="form-check ms-2">
+                                    <input class="form-check-input" type="radio" name="transtype" id="transtype2" value="2" checked>
+                                        <label class="form-check-label" for="transtype2">
+                                            Other Fees (PSP Fees, Trucks, Others ...)
+                                        </label>
+                                 </div>
+                                 </span>
                                 <div class="mb-3 mt-3">
                                     <label for="phonenumber" class="form-label">Phone Number:</label>
                                     <input type="text" class="form-control" id="phonenumber" placeholder="Enter Phone Number" name="phonenumber" required>
@@ -44,7 +58,7 @@
                                 </div>
                                 <select name="paymenttype" class="form-select mt-3">
                                     <option>Cash</option>
-                                    <option>Transfer</option>
+                                    <option selected>Transfer</option>
                                   </select>
                                 <div class="mb-3 mt-3">
                                     <label for="cashcollector" class="form-label">Cash Collected By</label>

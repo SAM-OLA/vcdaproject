@@ -10,6 +10,14 @@
                         <div class="my-5">
                             <form action="{{ url_for('add') }}" method="POST">
                                 <div class="mb-3 mt-3">
+                                    <label for="title" class="form-label">Title: </label>
+                                </div>
+                                <select name="title" class="form-select mt-3">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Ms.">Ms.</option>
+                                  </select>                           
+                                <div class="mb-3 mt-3">
                                     <label for="surname" class="form-label">Surname:</label>
                                     <input type="text" class="form-control" id="surname" placeholder="Enter surname" name="surname" required>
                                 </div>
@@ -29,14 +37,14 @@
                                     <label for="apartmenttype" class="form-label">Apartment Type: </label>
                                 </div>
                                 <select name="apartmenttype" class="form-select mt-3">
-                                    <option name="001">Bungalow</option>
-                                    <option name="002">Flats</option>
-                                    <option name="003">Duplex</option>
-                                    <option name="004">Single Room</option>
-                                    <option name="005">Mini Flats</option>
-                                    <option name="006">Self Contained</option>
-                                    <option name="007">Commercial</option>
-                                    <option name="008">Network Mast</option>
+                                    <option value="001">Bungalow</option>
+                                    <option value="002">Flats</option>
+                                    <option value="003">Duplex</option>
+                                    <option value="004">Single Room</option>
+                                    <option value="005">Mini Flats</option>
+                                    <option value="006">Self Contained</option>
+                                    <option value="007">Commercial</option>
+                                    <option value="008">Network Mast</option>
                                   </select>
                                 <div class="mb-3 mt-3">
                                     <label for="mobilenumber" class="form-label">Mobile Number: (whatsapp)</label>
