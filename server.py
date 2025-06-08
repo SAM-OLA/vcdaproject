@@ -30,7 +30,8 @@ def add():
         apartmenttype=request.form["apartmenttype"],
         groupid='0',
         phonenumber=request.form["mobilenumber"]
-    
+        today = datetime.datetime.now()
+        dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
         '''INSERT INTO register 
         (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber) VALUES (%s,%s,%s, %s,%s, %s,%s,%s)''', 
@@ -48,8 +49,8 @@ def add():
         try:
             cur2.execute( 
             '''INSERT INTO users 
-            (username, password,status,dateregistered,defaultpwd) VALUES (%s, %s,%s, %s,%s)''',
-            (phonenumber, hashed_password, '1','31/01/2025','1'))
+            (username, password,status,dateregistered,defaultpwd, logindate) VALUES (%s, %s,%s, %s,%s,%s)''',
+            (phonenumber, hashed_password, '1',dateregistered,'1',dateregistered))
             #insert into users values('tayo', crypt('guest', gen_salt('md5')), '1','31/01/2025','1')
   
             # commit the changes 
@@ -64,9 +65,9 @@ def add():
             conn1.close() 
             conn2.close() 
             conn3.close() 
-            return render_template("success.html", messageText = "Data Successfully Saved")
+            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl = "register")
         except:
-            return render_template("Failure.html", messageText = "Data Error - Phone Number Already Exists")
+            return render_template("Failure.html", messageText = "Data Error - Phone Number Already Exists", redirecturl = "register")
 
 @app.route("/updateregister", methods=["GET", "POST"])
 def updateregister():
@@ -95,10 +96,10 @@ def updateregister():
             # close the cursor and connection 
             cur1.close() 
             conn1.close() 
-            return render_template("success.html", messageText = "Data Successfully Saved")
+            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl="login")
         except Exception as e:
             print(f"An error occurred: {str(e)}")
-            return render_template("Failure.html", messageText = "Update Error")
+            return render_template("Failure.html", messageText = "Update Error", redirecturl="login")
             
     
     
@@ -111,12 +112,14 @@ def login_confirm():
         con3 = functionbase.connection()
         con4 = functionbase.connection()
         con5 = functionbase.connection()
+        con6 = functionbase.connection()
 
         cur1 = con1.cursor() 
         cur2 = con2.cursor() 
         cur3 = con3.cursor() 
         cur4 = con4.cursor() 
         cur5 = con5.cursor() 
+        cur6 = con6.cursor() 
 
         phonenumber=request.form["phonenumber"],
         password=request.form["password"]
@@ -126,7 +129,7 @@ def login_confirm():
         sql2 = 'SELECT * from register where phonenumber=%s'
         sql3 = 'SELECT * from paymenttransactions where phonenumber=%s and transtype=%s'
         sql5 = 'SELECT * from paymenttransactions where groupid=%s and transtype=%s'
-
+        
         param = (phonenumber,password)
         param2 = (phonenumber)
         param3 = (phonenumber,"ESTATE DUE")
@@ -174,16 +177,27 @@ def login_confirm():
         
             param5 = (int(dictdata['groupid']),"OTHER FEES")
             cur5.execute(sql5,param5)
+            try:
+                today = datetime.datetime.now()
+                logindate = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
+                param6 = logindate
+                sql6 = "UPDATE users SET logindate = '{logdate}' WHERE username = '{uname}';".format(logdate=logindate,uname=dictdata['phonenumber'])
+                cur6.execute(sql6)
+                con6.commit()
+            except Exception as ee:
+                print(f"An error occurred: {str(ee)}")
             myresult5 = [item for item in cur5.fetchall()]
             cur5.close() 
             con5.close() 
+            cur6.close() 
+            con6.close() 
             dictdata['otherfees'] = myresult5
             #print(dictdata)
             #if(numrows > 0):
 
             return render_template("dashboard.html", customerdata = dictdata)
         else:
-            return render_template("Failure.html", messageText = f"Login NOT Successful for {phonenumber}")
+            return render_template("Failure.html", messageText = f"Login NOT Successful for {phonenumber}",redirecturl="login")
         
 
 @app.route("/add_payment", methods=["GET", "POST"])
@@ -223,7 +237,7 @@ def add_payment():
         con1.commit()
         cur1.close() 
         con1.close() 
-        return render_template("Success.html", messageText = f"Payment Successfully added for {phonenumber}")
+        return render_template("Success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
 
 @app.route('/')
 def home():
@@ -304,12 +318,12 @@ def processchangepassword():
                 conn2.close() 
                 conn3.close() 
                 conn4.close() 
-                return render_template("success.html", messageText = "Password Changed Successfully")
+                return render_template("success.html", messageText = "Password Changed Successfully", redirecturl="login")
             except Exception as er:
                 print(er)
-                return render_template("Failure.html", messageText = "Password Change Failed")
+                return render_template("Failure.html", messageText = "Password Change Failed", redirecturl="login")
         else:
-            return render_template("Failure.html", messageText = "Resident with this Phone Number Does Not Exists")
+            return render_template("Failure.html", messageText = "Resident with this Phone Number Does Not Exists", redirecturl="login")
 
 @app.route('/feeslist')
 def feeslist():

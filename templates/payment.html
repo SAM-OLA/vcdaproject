@@ -1,4 +1,5 @@
 {% include "header.html" %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <div class="px-4 pt-5 my-5 text-center border-bottom">
     <h3>Register Your Dues / Levies Payment Here</h3>
 </div>
@@ -47,11 +48,16 @@
                                     </script>
                                 </div>
                                 <div class="mb-3 mt-3">
-                                    
+
                                     <label for="paymentdate">Payment Date:</label><br>
-                                    <input type="date" id="paymentdate" name="paymentdate" placeholder="Enter Payment Date" required>
-
-
+                                    <input type="text" id="paymentdate" name="paymentdate" placeholder="DD/MM/YYYY">
+                                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                                    <script>
+                                        flatpickr("#paymentdate", {
+                                            dateFormat: "d/m/Y",
+                                            allowInput: true
+                                        });
+                                    </script>
                                 </div>
                                 <div class="mb-3 mt-3">
                                     <label for="paymenttype" class="form-label">Payment Type: </label>
