@@ -11,7 +11,7 @@
       </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md bg-primary fixed-top navbar-dark">
+    <nav class="navbar navbar-expand-lg bg-primary fixed-top navbar-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('home') }}"><img src="./static/images/logo.png" alt="victory estate icon" height="60"> Victory Estate</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -24,27 +24,27 @@
             <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('about_us') }}">About</a>
+            <a class="nav-link active" href="{{ url_for('about_us') }}">About</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="{{ url_for('register') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link active dropdown-toggle" href="{{ url_for('register') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Services
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ url_for('register') }}">Registration</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('login') }}">Login</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('register') }}">Registration</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('login') }}">Login</a></li>
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="{{ url_for('feeslist') }}">Fees List</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('payment') }}">Payment</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('feeslist') }}">Fees List</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('payment') }}">Payment</a></li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('contact_us') }}">Contact us</a>
+            <a class="nav-link" active href="{{ url_for('contact_us') }}">Contact us</a>
           </li>
           <li class="btn-phone-number">
-            <a class="nav-link" text-align:right><i class="houzez-icon icon-phone-actions-ring mr-1"></i> +234-913-359-9801</a>
+              <a class="nav-link" active text-align:right>&nbsp;&nbsp;&nbsp;<i class="houzez-icon icon-phone-actions-ring mr-1"></i> +234-913-359-9801</a>
         </li>
         </ul>
         
