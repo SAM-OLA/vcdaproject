@@ -6,7 +6,7 @@ def connection():
     connn = psycopg2.connect(database="victoryestate", 
                         user="postgres", 
                         password="postgres", 
-                        host="16.171.31.3", port="5432")
+                        host="16.171.31.3", port="5432")  #127.0.0.1
     return connn
 
 def connectionlite():

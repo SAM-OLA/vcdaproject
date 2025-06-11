@@ -255,7 +255,7 @@ def contact_us():
 def register():
     return render_template("register.html")
 
-@app.route('/<varprofile>')
+@app.route('/edit_profile/<varprofile>')
 def edit_profile(varprofile):
     #print(varprofile)
     resvarprofile = ast.literal_eval(varprofile) # this converts String Dict to Python Dict
