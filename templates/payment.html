@@ -1,14 +1,14 @@
 {% include "header.html" %}
-<br /><br />
+<br />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<div class="px-1 pt-2 my-2 text-center border-bottom">
+<div class="px-4 pt-5 my-5 text-center border-bottom">
     <h3>Register Your Dues / Levies Payment Here</h3>
 </div>
         <!-- Main Content-->
         <main class="mb-4">
-            <div class="container px-4 px-lg-5">
+            <div class="container px-4 px-lg-5 col-sm-auto">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="col-md-10 col-lg-8 col-xl-7 col-sm-auto">
                         <div class="my-5">
                             <form action="{{ url_for('add_payment') }}" method="POST">
                                 <span class="border border-2 border border-info">
