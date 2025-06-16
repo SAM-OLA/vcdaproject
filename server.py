@@ -255,11 +255,28 @@ def contact_us():
 def register():
     return render_template("register.html")
 
-@app.route('/edit_profile/<varprofile>')
-def edit_profile(varprofile):
+@app.route('/edit_profile/<varphonenumber>')
+def edit_profile(varphonenumber):
     #print(varprofile)
-    resvarprofile = ast.literal_eval(varprofile) # this converts String Dict to Python Dict
-    return render_template("edit_profile.html", profile=resvarprofile)
+    #resvarprofile = ast.literal_eval(varprofile) # this converts String Dict to Python Dict
+    #print('*'*24)
+    #print(resvarprofile)
+    varprofile = {}
+    con = functionbase.connection()
+    cur = con.cursor() 
+    sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
+    #param = (varphonenumber)
+    cur.execute(sql)
+    myresult = cur.fetchone()
+    varprofile['title'] = myresult[1]
+    varprofile['surname'] = myresult[2]
+    varprofile['firstname'] = myresult[3]
+    varprofile['othernames'] = myresult[4]
+    varprofile['address'] = myresult[5]
+    varprofile['apartmenttypecode'] = myresult[6]
+    varprofile['phonenumber'] = myresult[8]
+
+    return render_template("edit_profile.html", profile=varprofile)
 
 @app.route('/login')
 def login():
