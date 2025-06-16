@@ -67,7 +67,7 @@ def add():
             conn3.close() 
             return render_template("success.html", messageText = "Data Successfully Saved", redirecturl = "register")
         except:
-            return render_template("Failure.html", messageText = "Data Error - Phone Number Already Exists", redirecturl = "register")
+            return render_template("failure.html", messageText = "Data Error - Phone Number Already Exists", redirecturl = "register")
 
 @app.route("/updateregister", methods=["GET", "POST"])
 def updateregister():
@@ -99,7 +99,7 @@ def updateregister():
             return render_template("success.html", messageText = "Data Successfully Saved", redirecturl="login")
         except Exception as e:
             print(f"An error occurred: {str(e)}")
-            return render_template("Failure.html", messageText = "Update Error", redirecturl="login")
+            return render_template("failure.html", messageText = "Update Error", redirecturl="login")
             
     
     
@@ -197,7 +197,7 @@ def login_confirm():
 
             return render_template("dashboard.html", customerdata = dictdata)
         else:
-            return render_template("Failure.html", messageText = f"Login NOT Successful for {phonenumber}",redirecturl="login")
+            return render_template("failure.html", messageText = f"Login NOT Successful for {phonenumber}",redirecturl="login")
         
 
 @app.route("/add_payment", methods=["GET", "POST"])
@@ -237,7 +237,7 @@ def add_payment():
         con1.commit()
         cur1.close() 
         con1.close() 
-        return render_template("Success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
+        return render_template("success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
 
 @app.route('/')
 def home():
@@ -338,9 +338,9 @@ def processchangepassword():
                 return render_template("success.html", messageText = "Password Changed Successfully", redirecturl="login")
             except Exception as er:
                 print(er)
-                return render_template("Failure.html", messageText = "Password Change Failed", redirecturl="login")
+                return render_template("failure.html", messageText = "Password Change Failed", redirecturl="login")
         else:
-            return render_template("Failure.html", messageText = "Resident with this Phone Number Does Not Exists", redirecturl="login")
+            return render_template("failure.html", messageText = "Resident with this Phone Number Does Not Exists", redirecturl="login")
 
 @app.route('/feeslist')
 def feeslist():
