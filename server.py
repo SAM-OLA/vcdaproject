@@ -206,38 +206,42 @@ def add_payment():
         # CREATE RECORD
         transcode= ''
         groupid=0
-        con1 = functionbase.connection()
-        con2 = functionbase.connection()
-        cur1 = con1.cursor() 
-        cur2 = con2.cursor() 
+        try:
+            con1 = functionbase.connection()
+            con2 = functionbase.connection()
+            cur1 = con1.cursor() 
+            cur2 = con2.cursor() 
         
-        transtype = request.form["transtype"],
-        phonenumber = request.form["phonenumber"],
-        description = request.form["description"]
-        amount = request.form["amount"]
-        paymentdate = request.form["paymentdate"]
-        paymenttype = request.form["paymenttype"]
-        cashcollector = request.form["cashcollector"]
-        
-        if (transtype[0] == '1'):
-            transcode='ESTATE DUE'
-        else:
-            transcode='OTHER FEES'
-        param2 = (phonenumber)
-        sql2 = "select groupid from register where phonenumber = %s"
-        cur2.execute(sql2,param2)
-        myresult = cur2.fetchone()
-        groupid = myresult[0]
+            transtype = request.form["transtype"],
+            phonenumber = request.form["phonenumber"],
+            description = request.form["description"]
+            amount = request.form["amount"]
+            paymentdate = request.form["paymentdate"]
+            paymenttype = request.form["paymenttype"]
+            cashcollector = request.form["cashcollector"]
+          
+            if (transtype[0] == '1'):
+                transcode='ESTATE DUE'
+            else:
+                transcode='OTHER FEES'
+            param2 = (phonenumber)
+            sql2 = "select groupid from register where phonenumber = %s"
+            cur2.execute(sql2,param2)
+            myresult = cur2.fetchone()
+            if len(myresult) > 0:
+                groupid = myresult[0]
         
 
-        cur1.execute( 
-        '''INSERT INTO paymenttransactions 
-        (phonenumber,description,amount,paymentdate,paymenttype,cashcollector,transtype,groupid,status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)''', 
-        (phonenumber,description,amount,paymentdate,paymenttype,cashcollector,transcode,groupid,'PENDING')) 
-        con1.commit()
-        cur1.close() 
-        con1.close() 
-        return render_template("success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
+            cur1.execute( 
+            '''INSERT INTO paymenttransactions 
+            (phonenumber,description,amount,paymentdate,paymenttype,cashcollector,transtype,groupid,status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)''', 
+            (phonenumber,description,amount,paymentdate,paymenttype,cashcollector,transcode,groupid,'PENDING')) 
+            con1.commit()
+            cur1.close() 
+            con1.close()
+            return render_template("success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
+        except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="payment")
 
 @app.route('/')
 def home():
@@ -262,21 +266,23 @@ def edit_profile(varphonenumber):
     #print('*'*24)
     #print(resvarprofile)
     varprofile = {}
-    con = functionbase.connection()
-    cur = con.cursor() 
-    sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
-    #param = (varphonenumber)
-    cur.execute(sql)
-    myresult = cur.fetchone()
-    varprofile['title'] = myresult[1]
-    varprofile['surname'] = myresult[2]
-    varprofile['firstname'] = myresult[3]
-    varprofile['othernames'] = myresult[4]
-    varprofile['address'] = myresult[5]
-    varprofile['apartmenttypecode'] = myresult[6]
-    varprofile['phonenumber'] = myresult[8]
-
-    return render_template("edit_profile.html", profile=varprofile)
+    try:
+        con = functionbase.connection()
+        cur = con.cursor() 
+        sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
+        #param = (varphonenumber)
+        cur.execute(sql)
+        myresult = cur.fetchone()
+        varprofile['title'] = myresult[1]
+        varprofile['surname'] = myresult[2]
+        varprofile['firstname'] = myresult[3]
+        varprofile['othernames'] = myresult[4]
+        varprofile['address'] = myresult[5]
+        varprofile['apartmenttypecode'] = myresult[6]
+        varprofile['phonenumber'] = myresult[8]
+        return render_template("edit_profile.html", profile=varprofile)
+    except Exception as ep:
+        return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="login")
 
 @app.route('/login')
 def login():
