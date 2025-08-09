@@ -15,19 +15,29 @@
                                 <form action="{{ url_for('login_confirm') }}" method="POST">
                                     <h2>Login Here!</h2>
                                     <div class="inputbox">
-                                        <ion-icon name="phone-outline"></ion-icon> <input type="text" name="phonenumber" required value="">
-                                        <label>Phone (+234803XXXXXXX)</label>
+                                        <ion-icon name="phone-outline"></ion-icon> 
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" name="phonenumber" id="phonenumber" placeholder="Phone Number">
+                                            
+                                        </div>
                                     </div>
                                     <div class="inputbox">
-                                        <ion-icon name="lock-closed-outline"></ion-icon> <input type="password" name="password"
-                                                                                                required value=""> <label>Password</label>
+                                        <ion-icon name="lock-closed-outline"></ion-icon> 
+                                        <div class="input-group mb-3">
+                                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password">
+
+                                            
+                                        </div>
+
                                     </div>
                                     <div class="forget">
                                         <label><input type="checkbox">Remember Me</label> <a href="changepassword">
                                             Change
                                             Password
                                         </a>
-                                    </div> <button>Log In</button>
+                                    </div>
+                                    
+                                    <button>Log In</button>
                                     <div class="register">
                                         <p>Don't have an account? <a href="register">Sign Up</a></p>
                                     </div>
