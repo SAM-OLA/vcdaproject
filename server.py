@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import functionbase
 import datetime
+
 #from flask_sqlalchemy import SQLAlchemy
 #from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 #from sqlalchemy import Integer, String, Float
@@ -17,6 +18,9 @@ def add():
         conn1 = functionbase.connection()
         conn2 = functionbase.connection()
         conn3 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="register")
 
         cur1 = conn1.cursor() 
         cur2 = conn2.cursor() 
@@ -75,6 +79,9 @@ def updateregister():
         # CREATE RECORD
         
         conn1 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
   
         cur1 = conn1.cursor() 
   
@@ -114,6 +121,9 @@ def login_confirm():
         con5 = functionbase.connection()
         con6 = functionbase.connection()
 
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+
         cur1 = con1.cursor() 
         cur2 = con2.cursor() 
         cur3 = con3.cursor() 
@@ -124,11 +134,11 @@ def login_confirm():
         phonenumber=request.form["phonenumber"],
         password=request.form["password"]
         dictdata = {}
-         
+  
         sql1 = 'SELECT * from users where username=%s and password=crypt(%s,password)'
         sql2 = 'SELECT * from register where phonenumber=%s'
-        sql3 = 'SELECT * from paymenttransactions where phonenumber=%s and transtype=%s'
-        sql5 = 'SELECT * from paymenttransactions where groupid=%s and transtype=%s'
+        sql3 = "SELECT * from paymenttransactions where phonenumber=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
+        sql5 = "SELECT * from paymenttransactions where groupid=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
         
         param = (phonenumber,password)
         param2 = (phonenumber)
@@ -209,6 +219,10 @@ def add_payment():
         try:
             con1 = functionbase.connection()
             con2 = functionbase.connection()
+
+            if con1 is None:
+                return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="payment")
+
             cur1 = con1.cursor() 
             cur2 = con2.cursor() 
         
@@ -219,7 +233,10 @@ def add_payment():
             paymentdate = request.form["paymentdate"]
             paymenttype = request.form["paymenttype"]
             cashcollector = request.form["cashcollector"]
-          
+            
+
+            print('=== Phone Number ==='*3)
+            print(phonenumber)
             if (transtype[0] == '1'):
                 transcode='ESTATE DUE'
             else:
@@ -239,9 +256,32 @@ def add_payment():
             con1.commit()
             cur1.close() 
             con1.close()
-            return render_template("success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="payment")
+            return render_template("success.html", messageText = f"Payment Successfully added for {phonenumber}", redirecturl="add_multiplepayment")
+        except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="add_multiplepayment")
+
+
+@app.route("/add_multiplepayment", methods=["GET", "POST"])
+def add_multiplepayment():
+        try:
+            con1 = functionbase.connection()
+            
+            if con1 is None:
+                return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="payment")
+            dictdata = {}
+            cur1 = con1.cursor() 
+           
+            sql1 = " select title,surname, firstname, othernames, phonenumber from register order by 2"
+            cur1.execute(sql1)
+            myresult = [item for item in cur1.fetchall()]
+            dictdata = myresult
+            cur1.close()
+            con1.close()
+            
+            return render_template('payment_multiple.html',residentinfo = dictdata)
         except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="payment")
+    
 
 @app.route('/')
 def home():
@@ -268,6 +308,9 @@ def edit_profile(varphonenumber):
     varprofile = {}
     try:
         con = functionbase.connection()
+        if con is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+
         cur = con.cursor() 
         sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
         #param = (varphonenumber)
@@ -301,6 +344,9 @@ def processchangepassword():
         conn2 = functionbase.connection()
         conn3 = functionbase.connection()
         conn4 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
 
         cur1 = conn1.cursor() 
         cur2 = conn2.cursor() 
@@ -343,7 +389,7 @@ def processchangepassword():
                 conn4.close() 
                 return render_template("success.html", messageText = "Password Changed Successfully", redirecturl="login")
             except Exception as er:
-                print(er)
+                #print(er)
                 return render_template("failure.html", messageText = "Password Change Failed", redirecturl="login")
         else:
             return render_template("failure.html", messageText = "Resident with this Phone Number Does Not Exists", redirecturl="login")
