@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
+from decimal import Decimal
 import functionbase
 import datetime
 
@@ -38,8 +39,8 @@ def add():
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
         '''INSERT INTO register 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber) VALUES (%s,%s,%s, %s,%s, %s,%s,%s)''', 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber)) 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s)''', 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE')) 
         
         # Define the password to be hashed
         password = 'guest'
@@ -401,6 +402,149 @@ def feeslist():
 @app.route('/payment')
 def payment():
     return render_template("payment.html")
+
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    return render_template("admin_dashboard.html")
+
+@app.route('/full_residents_list', methods=["GET", "POST"])
+def full_residents_list():
+    # CREATE RECORD
+   
+    try:
+        con1 = functionbase.connection()
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+        
+        cur1 = con1.cursor() 
+        dictdata = {}
+        sql1 = 'select title,surname,firstname,address,phonenumber from register_A order by surname'    
+        cur1.execute(sql1)
+   
+        numrows = cur1.rowcount
+        print(f'row numbers is {numrows}')
+        if(numrows > 0):
+            myresult1 = [item for item in cur1.fetchall()]
+            dictdata['data'] = myresult1   
+            cur1.close() 
+            con1.close() 
+            return render_template("full_residents_list.html", residentdata = dictdata)
+    except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+@app.route('/payments_list', methods=["GET", "POST"])
+def payments_list():
+    # CREATE RECORD
+   
+    try:
+        con1 = functionbase.connection()
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+        
+        cur1 = con1.cursor() 
+        dictdata = {}
+        sql1 = "select title, surname, firstname, address,register.phonenumber,amount from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='ESTATE DUE' and register.phonenumber != '0' order by surname";    
+        cur1.execute(sql1)
+   
+        numrows = cur1.rowcount
+        print(f'row numbers is {numrows}')
+        if(numrows > 0):
+            myresult1 = [item for item in cur1.fetchall()]
+            dictdata['data'] = myresult1   
+            cur1.close() 
+            con1.close() 
+            return render_template("payments_list.html", residentdata = dictdata)
+    except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+    
+@app.route('/outstanding_list', methods=["GET", "POST"])
+def outstanding_list():
+    # CREATE RECORD
+   
+    try:
+        con1 = functionbase.connection()
+        con2 = functionbase.connection()
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+        
+        cur1 = con1.cursor() 
+        cur2 = con2.cursor() 
+        dictdata = {}
+        newlistmain = []
+        #newlistsub=[]
+        sql1 = "select title,surname,firstname, address, apartmenttype,acct_number,amount from register inner join apartment_type on register.apartmenttype=apartment_type.code where status ='ACTIVE' order by surname;"    
+        sql2 = "select phonenumber, sum(cast(replace(amount,',','') as decimal)) from paymenttransactions where transtype='ESTATE DUE' group by phonenumber"    
+        cur1.execute(sql1)
+        cur2.execute(sql2)
+
+        numrows1 = cur1.rowcount
+        numrows2 = cur2.rowcount
+        print(f'row numbers is {numrows1}')
+        if(numrows1 > 0):
+            myresult1 = [item for item in cur1.fetchall()]
+            myresult2 = [item for item in cur2.fetchall()]
+            #dictdata['data'] = myresult1   
+            message=""
+            total=0
+            for i in range(len(myresult1)):
+                flag=False
+                amount=0
+                
+                for j in range(len(myresult2)):
+                    if myresult1[i][5] == myresult2[j][0]:
+                        #print(f'Balance Pay =N={myresult1[i][6]}-{myresult2[j][2]}')
+                        #message= f'myresult1[i][5] PAID'
+                        flag=True
+                        amount=myresult2[j][1]
+                        break
+                if(flag):
+ #                   print(f'{myresult1[i][5]} PAID *** BALANCE {Decimal(myresult1[i][6])-amount}')
+                    #myresult1[i][6]= Decimal(myresult1[i][6])-amount
+                    if Decimal(myresult1[i][6])-amount > 0:
+                        total = total + Decimal(myresult1[i][6])-amount
+                        newlistsub = [myresult1[i][0],myresult1[i][1],myresult1[i][2],myresult1[i][3],myresult1[i][4],myresult1[i][5],format(Decimal(myresult1[i][6])-amount,",")]
+                        newlistmain.append(newlistsub)
+                else:
+  #                  print(f'{myresult1[i][5]} DID NOT PAY *** BALANCE {myresult1[i][6]}')
+                    total = total + Decimal(myresult1[i][6])
+                    newlistsub = [myresult1[i][0],myresult1[i][1],myresult1[i][2],myresult1[i][3],myresult1[i][4],myresult1[i][5],format(Decimal(myresult1[i][6]),",")]
+                    newlistmain.append(newlistsub)                
+#            print("============HELO===============")
+#            print(newlistmain)
+            dictdata['data'] = newlistmain
+            
+            print(total)
+            cur1.close() 
+            con1.close()
+            
+            return render_template("outstanding_list.html", residentdata = dictdata, sumtotal=format(total,","))
+    except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+@app.route('/landlord_list', methods=["GET", "POST"])
+def landlord_list():
+    # CREATE RECORD
+   
+    try:
+        con1 = functionbase.connection()
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+        
+        cur1 = con1.cursor() 
+        dictdata = {}
+        sql1 = "select title,name,address1,address2,phonenumber from houseowner order by name";    
+        cur1.execute(sql1)
+   
+        numrows = cur1.rowcount
+        print(f'row numbers is {numrows}')
+        if(numrows > 0):
+            myresult1 = [item for item in cur1.fetchall()]
+            dictdata['data'] = myresult1   
+            cur1.close() 
+            con1.close() 
+            return render_template("landlord_list.html", residentdata = dictdata)
+    except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
 
 @app.route('/<name>')
 def greet(name):

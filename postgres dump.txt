@@ -4,11 +4,12 @@ pg_dump -Fc -h 127.0.0.1 -U postgres -d victoryestate -f victoryestate.dump
 
 Copy dump file to container
 ---------------------------
+docker cp victoryestate.dump 33fbe8ff57be:/victoryestate.dump
 
-docker cp victoryestate.dump 0fd7f64450ab:/victoryestate.dump
-
+sudo docker exec -it 33fbe8ff57be bash
 
 Restore Postgres DB in the container
 -------------------------------------------
+2347032701075
 
 pg_restore -d victoryestate -h 0.0.0.0 -U postgres victoryestate.dump

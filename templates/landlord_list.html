@@ -1,0 +1,38 @@
+{% include "header.html" %}
+<br /><br /><br />
+<div class="px-1 pt-2 my-2 text-center border-bottom">
+    <h3>Outstanding Payment List</h3>
+</div>
+        <!-- Main Content-->
+<main class="mb-4">
+    <div class="container px-4 px-sm-5">
+        <div class="row gx-4 gx-sm-5 justify-content-center">
+            <div class="col-sm-auto col-sm-auto col-sm-auto">
+                <div class="my-5">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Name</th>
+                                <th>House No</th>
+                                <th>Address</th>
+                                <th>Phonenumber</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            {% if residentdata["data"] | length > 0 %}
+                            {% for data1 in residentdata["data"] %}
+                            <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td></tr>
+                            {% endfor%}
+                            {% endif %}
+                        </tbody>
+                    </table>                    
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% include "footer.html" %}

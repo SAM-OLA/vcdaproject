@@ -1,0 +1,28 @@
+git status
+git add victoryestate.dump Jenkinsfile
+git commit -m "Database Dump Added"
+git push https://github.com/SAM-OLA/vcdaproject.git
+connect to remote linux server
+git clone https://github.com/SAM-OLA/vcdaproject.git
+cd vcdaproject
+sudo docker ps -a
+sudo docker build --tag victory .
+sudo docker images
+sudo docker run -d --name victoryestate -p 5000:5000 victory:latest
+sudo docker ps -a
+
+Database
+------------------
+ sudo docker pull postgres:16
+ sudo docker images
+
+ docker run --name postgres-db \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_DB=victoryestate \
+  -p 5432:5432 \
+  -v postgres-data:/var/lib/postgresql/data \
+  -d postgres:16
+
+
+
