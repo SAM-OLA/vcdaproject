@@ -8,7 +8,7 @@ def connection():
             connn = psycopg2.connect(database="victoryestate", 
                         user="postgres", 
                         password="postgres", 
-                        host="127.0.0.1", port="5432")  #127.0.0.1  
+                        host="56.228.11.172", port="5432")  #127.0.0.1  
             return connn
         except:
             return None
