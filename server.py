@@ -418,7 +418,7 @@ def full_residents_list():
         
         cur1 = con1.cursor() 
         dictdata = {}
-        sql1 = 'select title,surname,firstname,address,phonenumber from register_A order by surname'    
+        sql1 = 'select title,surname,firstname,address,phonenumber from register order by surname'    
         cur1.execute(sql1)
    
         numrows = cur1.rowcount
@@ -472,7 +472,7 @@ def outstanding_list():
         dictdata = {}
         newlistmain = []
         #newlistsub=[]
-        sql1 = "select title,surname,firstname, address, apartmenttype,acct_number,amount from register inner join apartment_type on register.apartmenttype=apartment_type.code where status ='ACTIVE' order by surname;"    
+        sql1 = "select title,surname,firstname, address, apartmenttype,acct_number,amount from register inner join apartment_type on register.apartmenttype=apartment_type.code where status ='ACTIVE' and phonenumber=acct_number order by surname;"    
         sql2 = "select phonenumber, sum(cast(replace(amount,',','') as decimal)) from paymenttransactions where transtype='ESTATE DUE' group by phonenumber"    
         cur1.execute(sql1)
         cur2.execute(sql2)

@@ -1,9 +1,13 @@
 {% include "header.html" %}
-<br /><br /><br />
+<br />
+<br />
+<br />
+<br />
+&nbsp;&nbsp;<a href={{ url_for('admin_dashboard') }}>Go Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <div class="px-1 pt-2 my-2 text-center border-bottom">
     <h3>Dues Payment List</h3>
 </div>
-        <!-- Main Content-->
+<!-- Main Content-->
 <main class="mb-4">
     <div class="container px-4 px-sm-5">
         <div class="row gx-4 gx-sm-5 justify-content-center">
@@ -28,7 +32,7 @@
                             {% endfor%}
                             {% endif %}
                         </tbody>
-                    </table>                    
+                    </table>
                 </div>
             </div>
         </div>
