@@ -1,5 +1,4 @@
-from turtle import title
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 from decimal import Decimal
 #from numpy import integer
 import functionbase
