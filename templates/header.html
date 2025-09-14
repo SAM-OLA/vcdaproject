@@ -12,6 +12,20 @@
     <script src="https://unpkg.com/vue@3.0.2">
 
     </script>
+
+    <style>
+        .table-container {
+            height: 300px; /* Set a fixed height for the scrollable area */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        .table-container thead th {
+            position: sticky;
+            top: 0; /* Stick to the top of the scrollable container */
+            background-color: #f8f9fa; /* Optional: Add a background to the header */
+            z-index: 1; /* Ensure the header stays above scrolling content */
+        }
+    </style>
 </head>
   <body>
     <nav class="navbar navbar-expand-sm bg-primary fixed-top navbar-dark">

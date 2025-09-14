@@ -2,6 +2,21 @@ Dump postgres DB
 ---------------------------------
 pg_dump -Fc -h 127.0.0.1 -U postgres -d victoryestate -f victoryestate.dump
 
+/*
+Dump postgres DB from a container --- sudo docker exec e515c2e3abf4 pg_dump -U postgres -F t victoryestate > dump_name
+
+docker cp dump_name.tar <container-name>:/
+Successfully copied 652kB to <container-name>:/
+docker exec -it <container-name> sh
+If the database is already created, run the next command.
+
+pg_restore -U <username> -C -d <database-name> dump_name.tar
+
+If the database is NOT created, run the following command using the initial Postgres database created.
+
+pg_restore -U postgres -C -d postgres dump_name.tar
+*/
+
 Copy dump file to container
 ---------------------------
 docker cp victoryestate.dump 33fbe8ff57be:/victoryestate.dump

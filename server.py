@@ -1,5 +1,7 @@
+from turtle import title
 from flask import Flask, render_template, request, redirect, url_for
 from decimal import Decimal
+#from numpy import integer
 import functionbase
 import datetime
 
@@ -43,7 +45,7 @@ def add():
         (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE')) 
         
         # Define the password to be hashed
-        password = 'guest'
+        password = 'resident'
         # Generate a salt using gen_salt
         cur3.execute("SELECT gen_salt('md5')")
         salt = cur3.fetchone()[0]
@@ -443,20 +445,85 @@ def payments_list():
         
         cur1 = con1.cursor() 
         dictdata = {}
-        sql1 = "select title, surname, firstname, address,register.phonenumber,amount from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='ESTATE DUE' and register.phonenumber != '0' order by surname";    
+        sql1 = "select register.title, register.surname, register.firstname, register.address,register.phonenumber,amount,cast(replace(amount,',','') as decimal),paymenttransactions.status,paymenttransactions.id from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='ESTATE DUE' and paymenttransactions.status != 'REJECTED' and register.phonenumber != '0' order by surname";    
         cur1.execute(sql1)
    
         numrows = cur1.rowcount
         print(f'row numbers is {numrows}')
         if(numrows > 0):
             myresult1 = [item for item in cur1.fetchall()]
-            dictdata['data'] = myresult1   
+            totallist = [val[6] for val in myresult1]
+            total = sum(totallist)
+            #print(total)
+            dictdata['data'] = myresult1
             cur1.close() 
             con1.close() 
-            return render_template("payments_list.html", residentdata = dictdata)
+            return render_template("payments_list.html", residentdata = dictdata,sumtotal=format(total,","))
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+@app.route('/approve_payments', methods=["GET", "POST"])
+def approve_payments():
+    # CREATE RECORD
+
+    conn1 = functionbase.connection()
+
+    if conn1 is None:
+        return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+  
+    cur1 = conn1.cursor() 
+    btnapprove = request.form.get('approve')
+    btnreject = request.form.get('reject')
     
+    if btnapprove == 'approve':
+        selected_items = request.form.getlist('status')
+        integer_selected_items = tuple([int(s) for s in selected_items])
+        #print(integer_selected_items)     
+        if len(integer_selected_items) > 1:
+            strupdateQuery = f"UPDATE paymenttransactions SET status='APPROVED' WHERE id IN {integer_selected_items}"
+        elif len(integer_selected_items) ==1:
+            strupdateQuery = f"UPDATE paymenttransactions SET status='APPROVED' WHERE id ={integer_selected_items[0]}"
+        cur1.execute(strupdateQuery)
+    
+        try:
+            # commit the changes 
+            conn1.commit()
+            # close the cursor and connection 
+            cur1.close() 
+            conn1.close() 
+            return render_template("success.html", messageText = "Approve Successful", redirecturl="payments_list")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return render_template("failure.html", messageText = "Approve Error", redirecturl="login")
+
+    if btnreject == 'reject':
+        selected_items = request.form.getlist('status')
+        integer_selected_items = tuple([int(s) for s in selected_items])
+        #print(integer_selected_items)     
+        if len(integer_selected_items) > 1:
+            strupdateQuery = f"UPDATE paymenttransactions SET status='REJECTED' WHERE id IN {integer_selected_items}"
+        elif len(integer_selected_items) ==1:
+            strupdateQuery = f"UPDATE paymenttransactions SET status='REJECTED' WHERE id = {integer_selected_items[0]}"
+        cur1.execute(strupdateQuery)
+    
+        try:
+            # commit the changes 
+            conn1.commit()
+            # close the cursor and connection 
+            cur1.close() 
+            conn1.close() 
+            return render_template("failure.html", messageText = "Payment Rejected", redirecturl="payments_list")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return render_template("failure.html", messageText = "Reject Error", redirecturl="login")
+        
+    
+
+
+
+    
+   
+ 
 @app.route('/outstanding_list', methods=["GET", "POST"])
 def outstanding_list():
     # CREATE RECORD
