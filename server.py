@@ -9,6 +9,7 @@ import datetime
 #from sqlalchemy import Integer, String, Float
 import sqlite3
 import ast
+#import cryptography
 
 app = Flask(__name__)
 
@@ -619,3 +620,4 @@ def greet(name):
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
+    #app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')

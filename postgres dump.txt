@@ -7,6 +7,9 @@ Dump postgres DB from a container --- sudo docker exec e515c2e3abf4 pg_dump -U p
 
 docker cp dump_name.tar <container-name>:/
 Successfully copied 652kB to <container-name>:/
+copy file from a container
+docker cp my-web-app:/app/configs/config.txt .
+
 docker exec -it <container-name> sh
 If the database is already created, run the next command.
 

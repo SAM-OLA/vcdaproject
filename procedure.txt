@@ -16,7 +16,7 @@ Database
  sudo docker pull postgres:16
  sudo docker images
 
- docker run --name postgres-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=victoryestate  -p 5432:5432 -v postgres-data:/var/lib/postgresql/data -d postgres:16
+ docker run --name postgres-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=victoryestate  -p 5432:5432 -v /home/ubuntu/postgres-data:/var/lib/postgresql/data -d postgres:16
 
 
 
