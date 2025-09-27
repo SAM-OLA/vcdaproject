@@ -7,6 +7,54 @@
 <div class="px-1 pt-2 my-2 text-center border-bottom">
     <h3>Full Residents List</h3>
 </div>
+
+<div class="mb-3 mt-3">
+    <label for="landlord" class="form-label">Land Lord:</label>
+    <div class="custom-dropdown-container">
+        <select class="custom-dropdown" id="landlord" name="landlord" onchange="location=this.value;">
+            <option value="0">-----select a landlord-----</option>
+            {% for items in landlordinfo %}
+            <option value="{{ url_for('landlord_residents_list', varlandlordid=items[5]) }}"> {{ items[0]+" "+items[1]+", "+items[2]+", "+items[3] }} </option>
+            {% endfor %}
+        </select>
+    </div>
+    <style>
+        .custom-dropdown-container {
+            display: inline-block;
+            position: relative; /* For positioning the pseudo-element */
+        }
+
+        .custom-dropdown {
+            background-color: #00F;
+            color: #FFF;
+            border: 1px solid #FFF;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 10px 10px 10px 16px; /* T, R, B, L */
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 220px; /* Adjust width as needed */
+        }
+
+        .custom-dropdown-container::after {
+            content: '\25BC'; /* Unicode character for dropdown arrow */
+            color: #FFF;
+            position: absolute;
+            right: 20px; /* Adjust space to the right of the dropdown icon */
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .custom-dropdown option {
+            background-color: #00F !important;
+            color: #FFF;
+            font-weight: 600;
+        }
+    </style>
+</div>
 <!-- Main Content-->
 <main class="mb-4">
     <div class="container px-4 px-sm-5">

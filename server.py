@@ -41,8 +41,8 @@ def add():
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
         '''INSERT INTO register 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s)''', 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE')) 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status,landlordcode) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s,%s)''', 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE','00')) 
         
         # Define the password to be hashed
         password = 'resident'
@@ -95,10 +95,11 @@ def updateregister():
         address=request.form["houseaddress"],
         apartmenttype=request.form["apartmenttype"],
         groupid='0',
+        landlord=request.form["landlord"]
         phonenumber=request.form["mobilenumber"]
     
         
-        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,address,apartmenttype,phonenumber))
+        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, landlordid=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,address,apartmenttype,landlord,phonenumber))
      
         try:
             # commit the changes 
@@ -302,6 +303,10 @@ def contact_us():
 def register():
     return render_template("register.html")
 
+@app.route('/landlordregister')
+def landlordregister():
+    return render_template("landlord_profile.html")
+
 @app.route('/edit_profile/<varphonenumber>')
 def edit_profile(varphonenumber):
     #print(varprofile)
@@ -311,8 +316,21 @@ def edit_profile(varphonenumber):
     varprofile = {}
     try:
         con = functionbase.connection()
+        con1 = functionbase.connection()
         if con is None:
             return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+
+        
+
+        dictdata = {}
+        cur1 = con1.cursor() 
+        sql1 = "select title,surname,firstname, address1,address2,phonenumber,index from houseowner order by 2"
+        cur1.execute(sql1)
+        myresult1 = [item for item in cur1.fetchall()]
+        dictdata = myresult1
+        cur1.close()
+        con1.close()
+        
 
         cur = con.cursor() 
         sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
@@ -326,7 +344,8 @@ def edit_profile(varphonenumber):
         varprofile['address'] = myresult[5]
         varprofile['apartmenttypecode'] = myresult[6]
         varprofile['phonenumber'] = myresult[8]
-        return render_template("edit_profile.html", profile=varprofile)
+        varprofile['landlordid'] = int(myresult[11])
+        return render_template("edit_profile.html", profile=varprofile, landlordinfo = dictdata)
     except Exception as ep:
         return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="login")
 
@@ -415,13 +434,22 @@ def full_residents_list():
    
     try:
         con1 = functionbase.connection()
+        con2 = functionbase.connection()
         if con1 is None:
             return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
         
         cur1 = con1.cursor() 
+        cur2 = con2.cursor() 
         dictdata = {}
+        dictdata2 = {}
         sql1 = 'select title,surname,firstname,address,phonenumber from register order by surname'    
         cur1.execute(sql1)
+        sql2 = 'select title,surname,firstname,othernames,phonenumber,index from houseowner order by surname'    
+        cur2.execute(sql2)
+        myresult2 = [item for item in cur2.fetchall()]
+        dictdata2 = myresult2
+        cur2.close()
+        con2.close()
    
         numrows = cur1.rowcount
         print(f'row numbers is {numrows}')
@@ -430,9 +458,51 @@ def full_residents_list():
             dictdata['data'] = myresult1   
             cur1.close() 
             con1.close() 
-            return render_template("full_residents_list.html", residentdata = dictdata)
+            return render_template("full_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2)
+        else:
+            return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
     except Exception as ep:
-            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_residents_list")
+
+
+@app.route('/landlord_residents_list/<varlandlordid>', methods=["GET", "POST"])
+def landlord_residents_list(varlandlordid):
+    # CREATE RECORD
+   
+    try:
+        con1 = functionbase.connection()
+        con2 = functionbase.connection()
+        if con1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+        
+        cur1 = con1.cursor() 
+        cur2 = con2.cursor() 
+        dictdata = {}
+        dictdata2 = {}
+        sql1 = f"select title,surname,firstname,address,phonenumber from register where landlordid='{ varlandlordid }' order by surname"    
+        cur1.execute(sql1)
+        sql2 = 'select title,surname,firstname,othernames,phonenumber,index from houseowner order by surname'    
+        cur2.execute(sql2)
+        myresult2 = [item for item in cur2.fetchall()]
+        dictdata2 = myresult2
+        cur2.close()
+        con2.close()
+   
+        numrows = cur1.rowcount
+        print(f'row numbers is {numrows}')
+        if(numrows > 0):
+            myresult1 = [item for item in cur1.fetchall()]
+            dictdata['data'] = myresult1   
+            cur1.close() 
+            con1.close() 
+            return render_template("landlord_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2, selectedtext=int(varlandlordid))
+        else:
+            return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
+    except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_residents_list")
+
+
+
 
 @app.route('/payments_list', methods=["GET", "POST"])
 def payments_list():
@@ -599,7 +669,7 @@ def landlord_list():
         
         cur1 = con1.cursor() 
         dictdata = {}
-        sql1 = "select title,name,address1,address2,phonenumber from houseowner order by name";    
+        sql1 = "select title,concat(surname,' ',firstname,' ',othernames) as name,address1,address2,phonenumber from houseowner order by name";    
         cur1.execute(sql1)
    
         numrows = cur1.rowcount
@@ -612,6 +682,105 @@ def landlord_list():
             return render_template("landlord_list.html", residentdata = dictdata)
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+
+@app.route('/edit_landlord_profile/<varphonenumber>')
+def edit_landlord_profile(varphonenumber):
+    #print(varprofile)
+    #resvarprofile = ast.literal_eval(varprofile) # this converts String Dict to Python Dict
+    #print('*'*24)
+    #print(resvarprofile)
+    varprofile = {}
+    try:
+        con = functionbase.connection()
+        con1 = functionbase.connection()
+        if con is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+
+        cur = con.cursor() 
+        sql = f"SELECT * from houseowner where phonenumber='{varphonenumber}'"
+        #param = (varphonenumber)
+        cur.execute(sql)
+        myresult = cur.fetchone()
+        varprofile['title'] = myresult[1]
+        varprofile['surname'] = myresult[2]
+        varprofile['firstname'] = myresult[3]
+        varprofile['othernames'] = myresult[4]
+        varprofile['address1'] = myresult[5]
+        varprofile['address2'] = myresult[6]
+        varprofile['phonenumber'] = myresult[7]
+        return render_template("edit_landlord_profile.html", profile=varprofile)
+    except Exception as ep:
+        return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_list")
+
+@app.route("/updatelanlordregister", methods=["GET", "POST"])
+def updatelanlordregister():
+    if request.method == "POST":
+        # CREATE RECORD
+        
+        conn1 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+  
+        cur1 = conn1.cursor() 
+  
+        title=request.form["title"],
+        surname=request.form["surname"],
+        firstname=request.form["firstname"],
+        othernames=request.form["othername"],
+        housenumber=request.form["housenumber"],
+        houseaddress=request.form["houseaddress"],
+        phonenumber=request.form["mobilenumber"]
+    
+        
+        cur1.execute("UPDATE houseowner SET title=%s, surname=%s, firstname=%s, othernames=%s, address1=%s, address2=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,housenumber,houseaddress,phonenumber))
+     
+        try:
+            # commit the changes 
+            conn1.commit()
+            # close the cursor and connection 
+            cur1.close() 
+            conn1.close() 
+            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl="landlord_list")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return render_template("failure.html", messageText = "Update Error", redirecturl="login")
+            
+@app.route("/add_landlord", methods=["GET", "POST"])
+def add_landlord():
+    if request.method == "POST":
+        # CREATE RECORD
+        try:
+            con1 = functionbase.connection()
+            
+
+            if con1 is None:
+                return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="landlord_list")
+
+            cur1 = con1.cursor() 
+            
+        
+            title=request.form["title"],
+            surname=request.form["surname"],
+            firstname=request.form["firstname"],
+            othernames=request.form["othername"],
+            housenumber=request.form["housenumber"],
+            houseaddress=request.form["houseaddress"],
+            phonenumber=request.form["mobilenumber"]
+
+            cur1.execute( 
+            '''INSERT INTO houseowner 
+            (title,surname,firstname,othernames,address1,address2,phonenumber) VALUES (%s,%s,%s,%s,%s,%s,%s)''', 
+            (title,surname,firstname,othernames,housenumber,houseaddress,phonenumber)) 
+            con1.commit()
+            cur1.close() 
+            con1.close()
+            return render_template("success.html", messageText = f"LandLord Successfully added for {phonenumber}", redirecturl="landlord_list")
+        except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_list")
+
+    
 
 @app.route('/<name>')
 def greet(name):

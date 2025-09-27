@@ -1,0 +1,55 @@
+{% include "header.html" %}
+<div class="px-4 pt-5 my-5 text-center border-bottom">
+    <h3>LandLord Information Form</h3>
+</div>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <form action="{{ url_for('add_landlord') }}" method="POST">
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="title" class="form-label">Title: </label>
+                                </div>
+                                <select name="title" class="form-select mt-3">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Ms.">Ms.</option>
+                                    <option value="Pastor">Pastor</option>
+                                    <option value="Alhaji">Alhaji</option>
+                                </select>
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="surname" class="form-label">Surname:</label>
+                                    <input type="text" class="form-control" id="surname" placeholder="Enter surname" name="surname" required value="">
+                                </div>
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="firstname" class="form-label">Firstname:</label>
+                                    <input type="text" class="form-control" id="firstname" placeholder="Enter firstname" name="firstname" required value="">
+                                </div>
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="othername" class="form-label">Othernames:</label>
+                                    <input type="text" class="form-control" id="othername" placeholder="Enter othername" name="othername" required value="">
+                                </div>
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="housenumber" class="form-label">House Number:</label>
+                                    <input type="text" class="form-control" id="housenumber" placeholder="Enter house number" name="housenumber" required value="">
+                                </div>
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="houseaddress" class="form-label">Street Name</label>
+                                    <input type="text" class="form-control" id="houseaddress" placeholder="Enter house address" name="houseaddress" required value="">
+                                </div>
+
+                                <div class="mb-3 mt-3 form-group">
+                                    <label for="mobilenumber" class="form-label">Mobile Number: (whatsapp)</label>
+                                    <input type="text" class="form-control" id="mobilenumber" placeholder="Enter mobile number" name="mobilenumber" required value="">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+{% include "footer.html" %}

@@ -1,6 +1,6 @@
 {% include "header.html" %}
 <div class="px-4 pt-5 my-5 text-center border-bottom">
-    <h3>Residents Personal Information Form</h3>
+    <h3>LandLord Information Form</h3>
 </div>
         <!-- Main Content-->
         <main class="mb-4">
@@ -8,7 +8,7 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="my-5">
-                            <form action="{{ url_for('updateregister') }}" method="POST">
+                            <form action="{{ url_for('updatelanlordregister') }}" method="POST">
                                 <div class="mb-3 mt-3 form-group">
                                     <label for="title" class="form-label">Title: </label>
                                 </div>
@@ -16,6 +16,8 @@
                                     <option value="Mr" {{ 'selected' if profile['title'] == 'Mr' else '' }}>Mr</option>
                                     <option value="Mrs" {{ 'selected' if profile['title'] == 'Mrs' else '' }}>Mrs</option>
                                     <option value="Ms." {{ 'selected' if profile['title'] == 'Ms.' else '' }}>Ms.</option>
+                                    <option value="Pastor" {{ 'selected' if profile['title'] == 'Pastor' else '' }}>Pastor</option>
+                                    <option value="Alhaji" {{ 'selected' if profile['title'] == 'Alhaji' else '' }}>Alhaji</option>
                                 </select>
                                 <div class="mb-3 mt-3 form-group">
                                     <label for="surname" class="form-label">Surname:</label>
@@ -30,32 +32,14 @@
                                     <input type="text" class="form-control" id="othername" placeholder="Enter othername" name="othername" required value="{{ profile['othernames'] }}">
                                 </div>
                                 <div class="mb-3 mt-3 form-group">
-                                    <label for="houseaddress" class="form-label">House Address: (house no and street name)</label>
-                                    <input type="text" class="form-control" id="houseaddress" placeholder="Enter house address" name="houseaddress" required value="{{ profile['address'] }}">
+                                    <label for="housenumber" class="form-label">House Number:</label>
+                                    <input type="text" class="form-control" id="housenumber" placeholder="Enter house number" name="housenumber" required value="{{ profile['address1'] }}">
                                 </div>
                                 <div class="mb-3 mt-3 form-group">
-                                    <label for="apartmenttype" class="form-label">Apartment Type: </label>
+                                    <label for="houseaddress" class="form-label">Street Name</label>
+                                    <input type="text" class="form-control" id="houseaddress" placeholder="Enter house address" name="houseaddress" required value="{{ profile['address2'] }}">
                                 </div>
-                                <select name="apartmenttype" class="form-select mt-3">
-                                    <option value="001" {{ 'selected' if profile['apartmenttypecode'] == '001' else '' }}>Bungalow</option>
-                                    <option value="002" {{ 'selected' if profile['apartmenttypecode'] == '002' else '' }}>Flats</option>
-                                    <option value="003" {{ 'selected' if profile['apartmenttypecode'] == '003' else '' }}>Duplex</option>
-                                    <option value="004" {{ 'selected' if profile['apartmenttypecode'] == '004' else '' }}>Single Room</option>
-                                    <option value="005" {{ 'selected' if profile['apartmenttypecode'] == '005' else '' }}>Mini Flats</option>
-                                    <option value="006" {{ 'selected' if profile['apartmenttypecode'] == '006' else '' }}>Self Contained</option>
-                                    <option value="007" {{ 'selected' if profile['apartmenttypecode'] == '007' else '' }}>Commercial</option>
-                                    <option value="008" {{ 'selected' if profile['apartmenttypecode'] == '008' else '' }}>Network Mast</option>
-                                </select>
-                                <div class="mb-3 mt-3 form-group">
-                                    <label for="landlord" class="form-label">LandLord: </label>
-                                </div>
-                                <select name="landlord" class="form-select mt-3 form-group">
-                                    <option value="0">-----select a landlord-----</option>
-                                    {% for items in landlordinfo %}
-                                    <option value="{{ items[6] }}" {{ 'selected' if profile['landlordid'] == items[6] else '' }}> {{ items[1] }}{{ ', ' }}{{ items[2] }}{{ ', ' }}{{ items[0] }} </option>
-                                    {% endfor %}
 
-                                </select>
                                 <div class="mb-3 mt-3 form-group">
                                     <label for="mobilenumber" class="form-label">Mobile Number: (whatsapp)</label>
                                     <input type="text" class="form-control" id="mobilenumber" placeholder="Enter mobile number" name="mobilenumber" required readonly value="{{ profile['phonenumber'] }}">
