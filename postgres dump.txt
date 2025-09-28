@@ -1,6 +1,6 @@
 Dump postgres DB
 ---------------------------------
-
+pg_dump -Fc -U your_username -d your_database_name -f output_file.bak
 /*
 Dump postgres DB from a container --- sudo docker exec e515c2e3abf4 pg_dump -U postgres -F t victoryestate > dump_name
 

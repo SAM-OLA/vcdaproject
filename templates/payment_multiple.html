@@ -4,83 +4,84 @@
 <div class="px-4 pt-5 my-5 text-center border-bottom">
     <h3>Register Dues / Levies Payment Here</h3>
 </div>
-        <!-- Main Content-->
-        <main class="mb-4">
-            <div class="container px-4 px-md-5 col-md-auto">
-                <div class="row gx-4 gx-md-5 justify-content-center">
-                    <div class="col-md-10 col-md-8 col-md-7 col-md-auto">
-                        <div class="my-5">
-                            <form action="{{ url_for('add_payment') }}" method="POST">
-                                <!--<span class="border border-2 border border-info"></span>-->
-                                <div class="form-check ms-2" title="Transaction Type">
-                                    <input class="form-check-input" type="radio" name="transtype" id="transtype1" value="1" checked>
-                                    <label class="form-check-label" for="transtype1">
-                                        Estate Dues
-                                    </label>
-                                </div>
-                                <div class="form-check ms-2">
-                                    <input class="form-check-input" type="radio" name="transtype" id="transtype2" value="2">
-                                    <label class="form-check-label" for="transtype2">
-                                        Other Fees (PSP Fees, Trucks, Others ...)
-                                    </label>
-                                </div>
-
-                                <div class="mb-3 mt-3">
-                                    <label for="phonenumber" class="form-label">Phone Number:</label>
-                                    <select class="form-select mt-3" id="phonenumber" name="phonenumber">
-                                        {% for items in residentinfo %}
-                                        <option value="{{ items[4] }}"> {{ items[0]+' '+items[1]+', '+items[2]+', '+items[3] }} </option>
-                                        {% endfor %}
-                                    </select>    
-                                </div>
-                                <div class="mb-3 mt-3">
-                                    <label for="description" class="form-label">Description:</label>
-                                    <input type="text" class="form-control" id="description" placeholder="Enter Description" name="description" required>
-                                </div>
-                                <div class="mb-3 mt-3">
-                                    <label for="amount" class="form-label">Amount:</label>
-                                    <input type="text" class="form-control" id="amount" placeholder="Enter Amount" name="amount" required>
-                                    <script>
-                                        var inputField = document.querySelector('#amount')
-
-                                        inputField.oninput = function () {
-                                            var removechar = this.value.replace(/[^0-9\.]/g, '') // this is to remove alphabets and special character
-                                            var removedot = removechar.replace(/\./g, '') // this is to remove DOT
-                                            this.value = removedot
-                                            var formattedNumber = this.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                                            this.value = formattedNumber
-                                        }
-                                    </script>
-                                </div>
-                                <div class="mb-3 mt-3">
-
-                                    <label for="paymentdate">Payment Date:</label><br>
-                                    <input type="text" id="paymentdate" name="paymentdate" placeholder="DD/MM/YYYY">
-                                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-                                    <script>
-                                        flatpickr("#paymentdate", {
-                                            dateFormat: "d/m/Y",
-                                            allowInput: true
-                                        });
-                                    </script>
-                                </div>
-                                <div class="mb-3 mt-3">
-                                    <label for="paymenttype" class="form-label">Payment Type: </label>
-                                </div>
-                                <select name="paymenttype" class="form-select mt-3">
-                                    <option>Cash</option>
-                                    <option selected>Transfer</option>
-                                </select>
-                                <div class="mb-3 mt-3">
-                                    <label for="cashcollector" class="form-label">Cash Collected By</label>
-                                    <input type="text" class="form-control" id="cashcollector" placeholder="Enter Cash Collector Name" name="cashcollector" required>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
+&nbsp;&nbsp;<a href={{ url_for('admin_dashboard') }}>Go Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!-- Main Content-->
+<main class="mb-4">
+    <div class="container px-4 px-md-5 col-md-auto">
+        <div class="row gx-4 gx-md-5 justify-content-center">
+            <div class="col-md-10 col-md-8 col-md-7 col-md-auto">
+                <div class="my-5">
+                    <form action="{{ url_for('add_payment') }}" method="POST">
+                        <!--<span class="border border-2 border border-info"></span>-->
+                        <div class="form-check ms-2" title="Transaction Type">
+                            <input class="form-check-input" type="radio" name="transtype" id="transtype1" value="1" checked>
+                            <label class="form-check-label" for="transtype1">
+                                Estate Dues
+                            </label>
                         </div>
-                    </div>
+                        <div class="form-check ms-2">
+                            <input class="form-check-input" type="radio" name="transtype" id="transtype2" value="2">
+                            <label class="form-check-label" for="transtype2">
+                                Other Fees (PSP Fees, Trucks, Others ...)
+                            </label>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <label for="phonenumber" class="form-label">Phone Number:</label>
+                            <select class="form-select mt-3" id="phonenumber" name="phonenumber">
+                                {% for items in residentinfo %}
+                                <option value="{{ items[4] }}"> {{ items[0]+' '+items[1]+', '+items[2]+', '+items[3] }} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <input type="text" class="form-control" id="description" placeholder="Enter Description" name="description" required>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label for="amount" class="form-label">Amount:</label>
+                            <input type="text" class="form-control" id="amount" placeholder="Enter Amount" name="amount" required>
+                            <script>
+                                var inputField = document.querySelector('#amount')
+
+                                inputField.oninput = function () {
+                                    var removechar = this.value.replace(/[^0-9\.]/g, '') // this is to remove alphabets and special character
+                                    var removedot = removechar.replace(/\./g, '') // this is to remove DOT
+                                    this.value = removedot
+                                    var formattedNumber = this.value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                    this.value = formattedNumber
+                                }
+                            </script>
+                        </div>
+                        <div class="mb-3 mt-3">
+
+                            <label for="paymentdate">Payment Date:</label><br>
+                            <input type="text" id="paymentdate" name="paymentdate" placeholder="DD/MM/YYYY">
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                            <script>
+                                flatpickr("#paymentdate", {
+                                    dateFormat: "d/m/Y",
+                                    allowInput: true
+                                });
+                            </script>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label for="paymenttype" class="form-label">Payment Type: </label>
+                        </div>
+                        <select name="paymenttype" class="form-select mt-3">
+                            <option>Cash</option>
+                            <option selected>Transfer</option>
+                        </select>
+                        <div class="mb-3 mt-3">
+                            <label for="cashcollector" class="form-label">Cash Collected By</label>
+                            <input type="text" class="form-control" id="cashcollector" placeholder="Enter Cash Collector Name" name="cashcollector" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
             </div>
-        </main>
+        </div>
+    </div>
+</main>
 {% include "footer.html" %}

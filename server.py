@@ -41,7 +41,7 @@ def add():
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
         '''INSERT INTO register 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status,landlordcode) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s,%s)''', 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status,landlordid) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s,%s)''', 
         (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE','00')) 
         
         # Define the password to be hashed
@@ -442,7 +442,7 @@ def full_residents_list():
         cur2 = con2.cursor() 
         dictdata = {}
         dictdata2 = {}
-        sql1 = 'select title,surname,firstname,address,phonenumber from register order by surname'    
+        sql1 = "select title,surname,firstname,address,phonenumber from register where status = 'ACTIVE' order by surname"    
         cur1.execute(sql1)
         sql2 = 'select title,surname,firstname,othernames,phonenumber,index from houseowner order by surname'    
         cur2.execute(sql2)
@@ -711,7 +711,7 @@ def edit_landlord_profile(varphonenumber):
         varprofile['phonenumber'] = myresult[7]
         return render_template("edit_landlord_profile.html", profile=varprofile)
     except Exception as ep:
-        return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_list")
+        return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="/landlord_list")
 
 @app.route("/updatelanlordregister", methods=["GET", "POST"])
 def updatelanlordregister():
