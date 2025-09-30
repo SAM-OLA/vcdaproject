@@ -30,7 +30,7 @@
                             <label for="phonenumber" class="form-label">Phone Number:</label>
                             <select class="form-select mt-3" id="phonenumber" name="phonenumber">
                                 {% for items in residentinfo %}
-                                <option value="{{ items[4] }}"> {{ items[0]+' '+items[1]+', '+items[2]+', '+items[3] }} </option>
+                                <option value="{{ items[4] }}"> {{ items[1]+', '+items[2]+', '+items[3]+', '+items[0] }} </option>
                                 {% endfor %}
                             </select>
                         </div>

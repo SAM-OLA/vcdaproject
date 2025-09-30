@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 from decimal import Decimal
 #from numpy import integer
 import functionbase
 import datetime
-
+import pandas as pd
 #from flask_sqlalchemy import SQLAlchemy
 #from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 #from sqlalchemy import Integer, String, Float
@@ -275,7 +275,7 @@ def add_multiplepayment():
             dictdata = {}
             cur1 = con1.cursor() 
            
-            sql1 = " select title,surname, firstname, othernames, phonenumber from register order by 2"
+            sql1 = " select title,surname, firstname, othernames, phonenumber from register where status='ACTIVE' order by 2"
             cur1.execute(sql1)
             myresult = [item for item in cur1.fetchall()]
             dictdata = myresult
@@ -458,12 +458,20 @@ def full_residents_list():
             dictdata['data'] = myresult1   
             cur1.close() 
             con1.close() 
+            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber'])
+            #df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
+            with pd.ExcelWriter('residentsfulllist.xlsx') as writer:
+                df.to_excel(writer,sheet_name='residents list')
             return render_template("full_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2)
         else:
             return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_residents_list")
 
+@app.route('/full_residents_list_download', methods=["GET", "POST"])
+def full_residents_list_download():
+    path_to_file = "residentsfulllist.xlsx" 
+    return send_file(path_to_file, as_attachment=True)
 
 @app.route('/landlord_residents_list/<varlandlordid>', methods=["GET", "POST"])
 def landlord_residents_list(varlandlordid):
@@ -494,13 +502,21 @@ def landlord_residents_list(varlandlordid):
             myresult1 = [item for item in cur1.fetchall()]
             dictdata['data'] = myresult1   
             cur1.close() 
-            con1.close() 
+            con1.close()
+            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber'])
+            #df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
+            with pd.ExcelWriter('residentlistbylandlord.xlsx') as writer:
+                df.to_excel(writer,sheet_name='resident list')
             return render_template("landlord_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2, selectedtext=int(varlandlordid))
         else:
             return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="landlord_residents_list")
 
+@app.route('/residentlistbylandlord_download', methods=["GET", "POST"])
+def residentlistbylandlord_download():
+    path_to_file = "residentlistbylandlord.xlsx" 
+    return send_file(path_to_file, as_attachment=True)
 
 
 
@@ -526,11 +542,20 @@ def payments_list():
             total = sum(totallist)
             #print(total)
             dictdata['data'] = myresult1
+            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber', 'Amount', 'Status', 'ID','ID2'])
+            df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
+            with pd.ExcelWriter('paymentlist.xlsx') as writer:
+                df_modified.to_excel(writer,sheet_name='payment list')
             cur1.close() 
             con1.close() 
             return render_template("payments_list.html", residentdata = dictdata,sumtotal=format(total,","))
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+@app.route('/payment_list_download', methods=["GET", "POST"])
+def payment_list_download():
+    path_to_file = "paymentlist.xlsx" 
+    return send_file(path_to_file, as_attachment=True)
 
 @app.route('/approve_payments', methods=["GET", "POST"])
 def approve_payments():
@@ -649,7 +674,14 @@ def outstanding_list():
 #            print("============HELO===============")
 #            print(newlistmain)
             dictdata['data'] = newlistmain
-            
+            #print("============ HELO START===============")
+            #print(dictdata )
+            #print("============ HELO END ===============")
+
+            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Apartment Type', 'Phonenumber', 'Amount'])
+            df_modified = df.drop('Apartment Type', axis=1) 
+            with pd.ExcelWriter('outstandinglist.xlsx') as writer:
+                df_modified.to_excel(writer,sheet_name='outstanding list')
             print(total)
             cur1.close() 
             con1.close()
@@ -657,6 +689,12 @@ def outstanding_list():
             return render_template("outstanding_list.html", residentdata = dictdata, sumtotal=format(total,","))
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
+
+@app.route('/outstanding_list_download', methods=["GET", "POST"])
+def outstanding_list_download():
+    path_to_file = "outstandinglist.xlsx" 
+    return send_file(path_to_file, as_attachment=True)
 
 @app.route('/landlord_list', methods=["GET", "POST"])
 def landlord_list():
