@@ -140,17 +140,16 @@ def login_confirm():
         dictdata = {}
   
         sql1 = 'SELECT * from users where username=%s and password=crypt(%s,password)'
-        sql2 = 'SELECT * from register where phonenumber=%s'
-        sql3 = "SELECT * from paymenttransactions where phonenumber=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
+        sql2 = 'SELECT * from register where phonenumber=%s'      
         sql5 = "SELECT * from paymenttransactions where groupid=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
         
         param = (phonenumber,password)
         param2 = (phonenumber)
-        param3 = (phonenumber,"ESTATE DUE")
+
         
         cur1.execute(sql1,param)
         cur2.execute(sql2,param2)
-        cur3.execute(sql3,param3)
+        
         numrows = cur1.rowcount
         print(f'row numbers is {numrows}')
         if(numrows > 0):
@@ -161,6 +160,9 @@ def login_confirm():
             cur4.execute(sql4)
             myresult4 = cur4.fetchone()
             #myresult3 = cur3.fetchall()
+            sql3 = "SELECT * from paymenttransactions where phonenumber=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
+            param3 = (myresult2[9],"ESTATE DUE")
+            cur3.execute(sql3,param3)
             myresult3 = [item for item in cur3.fetchall()]
             cur1.close() 
             con1.close() 
@@ -462,6 +464,15 @@ def full_residents_list():
             #df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
             with pd.ExcelWriter('residentsfulllist.xlsx') as writer:
                 df.to_excel(writer,sheet_name='residents list')
+                workbook = writer.book
+                worksheet = writer.sheets['residents list']
+                # Set width for column A (index 0) to 20
+                worksheet.column_dimensions['A'].width = 7
+                worksheet.column_dimensions['B'].width = 8
+                worksheet.column_dimensions['C'].width = 20
+                worksheet.column_dimensions['D'].width = 20
+                worksheet.column_dimensions['E'].width = 25
+                worksheet.column_dimensions['F'].width = 15
             return render_template("full_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2)
         else:
             return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
@@ -487,7 +498,7 @@ def landlord_residents_list(varlandlordid):
         cur2 = con2.cursor() 
         dictdata = {}
         dictdata2 = {}
-        sql1 = f"select title,surname,firstname,address,phonenumber from register where landlordid='{ varlandlordid }' order by surname"    
+        sql1 = f"select title,surname,firstname,address,phonenumber from register where landlordid='{ varlandlordid }' and status = 'ACTIVE' order by surname"    
         cur1.execute(sql1)
         sql2 = 'select title,surname,firstname,othernames,phonenumber,index from houseowner order by surname'    
         cur2.execute(sql2)
@@ -507,6 +518,16 @@ def landlord_residents_list(varlandlordid):
             #df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
             with pd.ExcelWriter('residentlistbylandlord.xlsx') as writer:
                 df.to_excel(writer,sheet_name='resident list')
+                workbook = writer.book
+                worksheet = writer.sheets['resident list']
+                # Set width for column A (index 0) to 20
+                worksheet.column_dimensions['A'].width = 7
+                worksheet.column_dimensions['B'].width = 8
+                worksheet.column_dimensions['C'].width = 20
+                worksheet.column_dimensions['D'].width = 20
+                worksheet.column_dimensions['E'].width = 25
+                worksheet.column_dimensions['F'].width = 15
+
             return render_template("landlord_residents_list.html", residentdata = dictdata, landlordinfo = dictdata2, selectedtext=int(varlandlordid))
         else:
             return render_template("failure.html", messageText = f"The Selected Landlord Does Not Have a Resident attached to it", redirecturl="/full_residents_list")
@@ -546,6 +567,16 @@ def payments_list():
             df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
             with pd.ExcelWriter('paymentlist.xlsx') as writer:
                 df_modified.to_excel(writer,sheet_name='payment list')
+                workbook = writer.book
+                worksheet = writer.sheets['payment list']
+                # Set width for column A (index 0) to 20
+                worksheet.column_dimensions['A'].width = 7
+                worksheet.column_dimensions['B'].width = 8
+                worksheet.column_dimensions['C'].width = 20
+                worksheet.column_dimensions['D'].width = 20
+                worksheet.column_dimensions['E'].width = 25
+                worksheet.column_dimensions['F'].width = 15
+                worksheet.column_dimensions['G'].width = 15
             cur1.close() 
             con1.close() 
             return render_template("payments_list.html", residentdata = dictdata,sumtotal=format(total,","))
@@ -682,6 +713,16 @@ def outstanding_list():
             df_modified = df.drop('Apartment Type', axis=1) 
             with pd.ExcelWriter('outstandinglist.xlsx') as writer:
                 df_modified.to_excel(writer,sheet_name='outstanding list')
+                workbook = writer.book
+                worksheet = writer.sheets['outstanding list']
+                # Set width for column A (index 0) to 20
+                worksheet.column_dimensions['A'].width = 7
+                worksheet.column_dimensions['B'].width = 8
+                worksheet.column_dimensions['C'].width = 20
+                worksheet.column_dimensions['D'].width = 20
+                worksheet.column_dimensions['E'].width = 25
+                worksheet.column_dimensions['F'].width = 15
+                worksheet.column_dimensions['G'].width = 15
             print(total)
             cur1.close() 
             con1.close()
