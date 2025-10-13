@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/png" sizes="48x48" href="./static/images/logo.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>
@@ -19,19 +20,20 @@
             overflow-y: auto; /* Enable vertical scrolling */
         }
 
-        .table-container thead th {
-            position: sticky;
-            top: 0; /* Stick to the top of the scrollable container */
-            background-color: #f8f9fa; /* Optional: Add a background to the header */
-            z-index: 1; /* Ensure the header stays above scrolling content */
-        }
+            .table-container thead th {
+                position: sticky;
+                top: 0; /* Stick to the top of the scrollable container */
+                background-color: #f8f9fa; /* Optional: Add a background to the header */
+                z-index: 1; /* Ensure the header stays above scrolling content */
+            }
+
         img {
             pointer-events: none;
         }
     </style>
 </head>
   <body>
-    <nav class="navbar navbar-expand-xs bg-primary fixed-top navbar-dark">
+    <nav class="navbar navbar-expand-sm bg-primary fixed-top navbar-dark">
       <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('home') }}"><img src="/static/images/logo.png" alt="victory estate icon" height="60"> Victory Estate</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -39,34 +41,34 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-xs">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ url_for('about_us') }}">About</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link active dropdown-toggle" href="{{ url_for('register') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Services
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" active href="{{ url_for('register') }}">Registration</a></li>
-                        <li><a class="dropdown-item" active href="{{ url_for('login') }}">Login</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" active href="{{ url_for('feeslist') }}">Fees List</a></li>
-                        <li><a class="dropdown-item" active href="{{ url_for('payment') }}">Payment</a></li>
-                    </ul>
-                </li>
-                <!--<li class="nav-item">
-      <a class="nav-link" active href="{{ url_for('contact_us') }}">Contact us</a>
-    </li>-->
-                <li class="btn-phone-number">
-                    <a class="nav-link" active text-align:right>&nbsp;&nbsp;&nbsp;<i class="houzez-icon icon-phone-actions-ring mr-1"></i> +234-913-359-9801</a>
-                </li>
+        <ul class="navbar-nav me-auto mb-2 mb-sm">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{{ url_for('home') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ url_for('about_us') }}">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link active dropdown-toggle" href="{{ url_for('register') }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Services
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" active href="{{ url_for('register') }}">Registration</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('login') }}">Login</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" active href="{{ url_for('feeslist') }}">Fees List</a></li>
+              <li><a class="dropdown-item" active href="{{ url_for('payment') }}">Payment</a></li>
             </ul>
+          </li>
+          <!--<li class="nav-item">
+            <a class="nav-link" active href="{{ url_for('contact_us') }}">Contact us</a>
+          </li>-->
+          <li class="btn-phone-number">
+              <a class="nav-link" active text-align:right>&nbsp;&nbsp;&nbsp;<i class="houzez-icon icon-phone-actions-ring mr-1"></i> +234-913-359-9801</a>
+        </li>
+        </ul>
         
       </div>
     </nav>
