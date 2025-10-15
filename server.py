@@ -142,8 +142,8 @@ def login_confirm():
   
         sql1 = 'SELECT * from users where username=%s and password=crypt(%s,password)'
         sql2 = 'SELECT * from register where phonenumber=%s'      
-        sql5 = "SELECT * from paymenttransactions where groupid=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
-        
+        sql5 = "SELECT * from paymenttransactions where groupid=%s and transtype=%s and TO_NUMBER(amount,'9G99999D99') <> 0.00 order by To_DATE(paymentdate,'DD/MM/YYYY')"
+        0
         param = (phonenumber,password)
         param2 = (phonenumber)
 
