@@ -38,6 +38,7 @@ def add():
         apartmenttype=request.form["apartmenttype"],
         groupid='0',
         phonenumber=request.form["mobilenumber"]
+        phonenumber = "".join(char for char in phonenumber if char.isnumeric())
         today = datetime.datetime.now()
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
