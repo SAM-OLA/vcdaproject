@@ -57,6 +57,16 @@
 
                                 </select>
                                 <div class="mb-3 mt-3 form-group">
+                                    <label for="pspgroups" class="form-label">PSP Groups: </label>
+                                </div>
+                                <select name="pspgroups" class="form-select mt-3 form-group">
+                                    <option value="0">-----select a PSP Group-----</option>
+                                    {% for items in groupinfo %}
+                                    <option value="{{ items[3] }}" {{ 'selected' if profile['groupid'] == items[3] else '' }}> {{ items[0] }}</option>
+                                    {% endfor %}
+
+                                </select>
+                                <div class="mb-3 mt-3 form-group">
                                     <label for="mobilenumber" class="form-label">Mobile Number: (whatsapp)</label>
                                     <input type="text" class="form-control" id="mobilenumber" placeholder="Enter mobile number" name="mobilenumber" required readonly value="{{ profile['phonenumber'] }}">
                                 </div>

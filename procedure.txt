@@ -19,4 +19,26 @@ Database
  docker run --name postgres-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=victoryestate  -p 5432:5432 -v /home/ubuntu/postgres-data:/var/lib/postgresql/data -d postgres:16
 
 
+ '''
+history
+sudo docker ps -a
+rm -rf vcdaproject
+git clone https://github.com/SAM-OLA/vcdaproject.git
+cd vcdaproject
+nano functionbase.py
+cd templates
+mv Failure.html failure.html
+cd ..
+sudo docker stop 78ce413601b2
+sudo docker rm 78ce413601b2
+sudo docker rmi -f victory
+sudo docker build --tag victory .
+sudo docker run -d --name victoryestate -p 443:5000 victory:latest
+sudo -i -u postgres
+pg_restore -d victoryestate -h 0.0.0.0 -U postgres victoryestate.dump
+history
+ '''
+
+
+
 

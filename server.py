@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, redirect, url_for, flash, render_template, request, send_file
+#from flask_mail import Mail, Message
+from flask_mailman import Mail, EmailMessage
 from decimal import Decimal
 from openpyxl.styles import Alignment
 #from numpy import integer
@@ -9,11 +11,22 @@ import pandas as pd
 #from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 #from sqlalchemy import Integer, String, Float
 import sqlite3
-import ast
+import ast, os
 #import cryptography
 
 app = Flask(__name__)
 
+app.config['MAIL_SERVER'] = 'email-smtp.us-east-1.amazonaws.com' #email-smtp.eu-north-1.amazonaws.com
+app.config['MAIL_PORT'] = '465'
+app.config['MAIL_USERNAME'] = 'AKIARSU7K3NOXT55DK46'  #  corporateservices@victory-estate.com  AKIARSU7K3NO3WEB747A
+app.config['MAIL_PASSWORD'] = 'BO+qoW01L+T7XyTd6Nx5wSNj+jOBHWlhCm1i3UEd0cSe' #Victory-Estate  
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+#app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config.update(SECRET_KEY=os.urandom(24)
+)
+mail = Mail()
+mail.init_app(app)
   
 @app.route("/add", methods=["GET", "POST"])
 def add():
@@ -96,12 +109,12 @@ def updateregister():
         othernames=request.form["othername"],
         address=request.form["houseaddress"],
         apartmenttype=request.form["apartmenttype"],
-        groupid='0',
+        groupid=request.form["pspgroups"],
         landlord=request.form["landlord"]
         phonenumber=request.form["mobilenumber"]
     
         
-        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, landlordid=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,address,apartmenttype,landlord,phonenumber))
+        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, groupid= %s, landlordid=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,address,apartmenttype,groupid,landlord,phonenumber))
      
         try:
             # commit the changes 
@@ -299,8 +312,32 @@ def home():
 def about_us():
     return render_template("aboutus.html")
 
-@app.route('/contactus')
-def contact_us():
+@app.route('/contactus', methods=["GET", "POST"])
+def contactus():
+    if request.method == "POST":
+        # Retrieve form data using request.form
+        name = request.form["name"]
+        email = request.form["email"]
+        message = request.form["message"]
+
+        # *** Process the form data here ***
+        # e.g., print to console for testing
+        msg = EmailMessage('Contact Us Form Submission', 'Senders Email :'+email+'\n\n'+message,'corporateservices@victory-estate.com',['corporateservices@victory-estate.com'])
+        msgbody = print(f"Name: {name}, Email: {email}, Message: {message}")
+        msg.send()
+        # In a real application, you might add logic to:
+        # * Validate input (e.g., check for empty fields, valid email format)
+        # * Sanitize data (e.g., remove leading/trailing spaces, convert email to lowercase)
+        # * Send an email using Flask-Mail or Python's smtplib
+        # * Save the details to a database using Flask-SQLAlchemy
+
+        # Use flash messages for user feedback
+        flash("Thank you for contacting us! We will respond shortly.", "success")
+        
+        # Redirect the user after successful POST to prevent resubmission issues
+    #return redirect(url_for("contactus"))
+        #return ("Email Sent Successfully")
+
     return render_template("contactus.html")
  
 @app.route('/register')
@@ -321,19 +358,27 @@ def edit_profile(varphonenumber):
     try:
         con = functionbase.connection()
         con1 = functionbase.connection()
+        con2 = functionbase.connection()
         if con is None:
             return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
 
         
 
         dictdata = {}
-        cur1 = con1.cursor() 
+        cur1 = con1.cursor()
+        cur2 = con2.cursor()
         sql1 = "select title,surname,firstname, address1,address2,phonenumber,index from houseowner order by 2"
+        sql2 = "select groupname,address,unit,groupid from psparrangement order by 1"
         cur1.execute(sql1)
+        cur2.execute(sql2)
         myresult1 = [item for item in cur1.fetchall()]
+        myresult2 = [item for item in cur2.fetchall()]
         dictdata = myresult1
+        dictdata2 = myresult2
         cur1.close()
+        cur2.close()
         con1.close()
+        con2.close()
         
 
         cur = con.cursor() 
@@ -347,9 +392,12 @@ def edit_profile(varphonenumber):
         varprofile['othernames'] = myresult[4]
         varprofile['address'] = myresult[5]
         varprofile['apartmenttypecode'] = myresult[6]
+        varprofile['groupid'] = myresult[7]
         varprofile['phonenumber'] = myresult[8]
+        varprofile['acct_number'] = myresult[9]
+        varprofile['status'] = myresult[10]
         varprofile['landlordid'] = int(myresult[11])
-        return render_template("edit_profile.html", profile=varprofile, landlordinfo = dictdata)
+        return render_template("edit_profile.html", profile=varprofile, landlordinfo = dictdata, groupinfo = dictdata2)
     except Exception as ep:
         return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="login")
 
@@ -863,11 +911,14 @@ def add_landlord():
 
     
 
-@app.route('/<name>')
-def greet(name):
-    return f'Hello there {name}!'
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
     #app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
+
+
+'''
+SELECT sum(TO_NUMBER(amount,'9G99999D99')) FROM paymenttransactions where transtype='ESTATE DUE' and phonenumber IN (select phonenumber from register where apartmenttype='002' AND status='ACTIVE');
+select count(*) from register where apartmenttype='002' AND status='ACTIVE' AND phonenumber=acct_number;;
+
+''' 
