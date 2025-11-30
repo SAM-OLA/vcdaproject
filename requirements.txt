@@ -6,3 +6,4 @@ gunicorn
 cryptography
 pandas
 openpyxl
+flask_mailman
