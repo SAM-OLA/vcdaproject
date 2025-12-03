@@ -16,10 +16,10 @@ import ast, os
 
 app = Flask(__name__)
 
-app.config['MAIL_SERVER'] = 'email-smtp.us-east-1.amazonaws.com' #email-smtp.eu-north-1.amazonaws.com
+app.config['MAIL_SERVER'] = 'email-smtp.us-east-1.amazonaws.com' 
 app.config['MAIL_PORT'] = '465'
-app.config['MAIL_USERNAME'] = 'AKIARSU7K3NOXT55DK46'  #  corporateservices@victory-estate.com  AKIARSU7K3NO3WEB747A
-app.config['MAIL_PASSWORD'] = 'BO+qoW01L+T7XyTd6Nx5wSNj+jOBHWlhCm1i3UEd0cSe' #Victory-Estate  
+app.config['MAIL_USERNAME'] = 'AKIARSU7K3NOXT55DK46'  
+app.config['MAIL_PASSWORD'] = 'BO+qoW01L+T7XyTd6Nx5wSNj+jOBHWlhCm1i3UEd0cSe' 
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 #app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -322,7 +322,7 @@ def contactus():
 
         # *** Process the form data here ***
         # e.g., print to console for testing
-        msg = EmailMessage('Contact Us Form Submission', 'Senders Email :'+email+'\n\n'+message,'corporateservices@victory-estate.com',['corporateservices@victory-estate.com'])
+        msg = EmailMessage('Contact Us Form Submission', 'Senders Email :'+email+'\n\n'+name+'\n\n'+message,'corporateservices@victory-estate.com',['corporateservices@victory-estate.com'])
         msgbody = print(f"Name: {name}, Email: {email}, Message: {message}")
         msg.send()
         # In a real application, you might add logic to:
