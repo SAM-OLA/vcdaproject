@@ -95,10 +95,10 @@ Input Payment
                     </h5>
                     {% set my_admin_list = ['2348034102329','2348037125979','2348096661124','2348028401202','2348032400317','2348033676290','2348034960305','2348023610501','2348035276474','2348038510658','2347035699285'] %}
                     {% if customerdata['phonenumber'] in my_admin_list %}
-                    <h5><a href="{{ url_for('admin_dashboard')}}">Use Your Admin Role</a></h5>
-                    {% endif%}
+                    <a href="{{ url_for('admin_dashboard')}}" class="btn btn-success">Use Your Admin Role</a>
+    {% endif%}
 
-                </td>
+</td>
             </tr>
             <tr><td colspan="4" align="center"><h6>{{ customerdata["address"] }}</h6></td></tr>
             <tr><td colspan="4" align="center"><h6><u>Estate Dues 2025</u></h6></td></tr>

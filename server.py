@@ -922,3 +922,21 @@ SELECT sum(TO_NUMBER(amount,'9G99999D99')) FROM paymenttransactions where transt
 select count(*) from register where apartmenttype='002' AND status='ACTIVE' AND phonenumber=acct_number;;
 
 ''' 
+
+'''
+select 'Bungalow',COUNT(*) from register where apartmenttype='001' and status = 'ACTIVE'
+union
+select 'Flats',COUNT(*) from register where apartmenttype='002' and status = 'ACTIVE'
+union
+select 'Duplex',COUNT(*) from register where apartmenttype='003' and status = 'ACTIVE'
+union
+select 'Single Room',COUNT(*) from register where apartmenttype='004' and status = 'ACTIVE'
+union
+select 'Mini Flats',COUNT(*) from register where apartmenttype='005' and status = 'ACTIVE'
+union
+select 'Self Contained',COUNT(*) from register where apartmenttype='006' and status = 'ACTIVE'
+union
+select 'Commercial',COUNT(*) from register where apartmenttype='007' and status = 'ACTIVE'
+union
+select 'Network Mast',COUNT(*) from register where apartmenttype='008' and status = 'ACTIVE';
+'''

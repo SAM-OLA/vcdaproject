@@ -39,6 +39,6 @@ pg_restore -d victoryestate -h 0.0.0.0 -U postgres victoryestate.dump
 history
  '''
 
-
+class="pe-none" 
 
 
