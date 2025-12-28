@@ -56,13 +56,14 @@
 
                         </div>
                         <div class="mb-3 mt-3">
-                            <input type="tel" class="form-control" id="mobilenumber" placeholder="mobile number" name="mobilenumber" required value="+234 ">
+                            <input type="tel" class="form-control" id="mobilenumber1" placeholder="Zip Code" name="mobilenumber1" required value="+234 " size="3">
+                            <input type="text" name="mobilenumber2" placeholder="mobile number" />
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                     <script src="./static/assets/js/phone/intlTelInput.js"></script>
                     <script>
-                        var input = document.querySelector('#mobilenumber');
+                        var input = document.querySelector('#mobilenumber1');
                         window.intlTelInput(input, {});
                     </script>
                 </div>

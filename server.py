@@ -50,8 +50,17 @@ def add():
         address=request.form["houseaddress"],
         apartmenttype=request.form["apartmenttype"],
         groupid='0',
-        phonenumber=request.form["mobilenumber"]
-        phonenumber = "".join(char for char in phonenumber if char.isnumeric())
+        phonenumber1=request.form["mobilenumber1"]
+        phonenumber2 = request.form["mobilenumber2"]
+        print(5 * '*')
+        print(phonenumber1)
+        print(phonenumber2)
+        if phonenumber2.startswith('0'):
+            phonenumber2 = phonenumber2.lstrip('0')
+        phonenumber1 = (phonenumber1.lstrip('+')).rstrip()
+        phonenumber = phonenumber1+phonenumber2
+        print(phonenumber)
+        #phonenumber = "".join(char for char in phonenumber if char.isnumeric())
         today = datetime.datetime.now()
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 

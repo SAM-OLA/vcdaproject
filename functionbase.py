@@ -7,8 +7,8 @@ def connection():
         try:
             connn = psycopg2.connect(database="victoryestate", 
                         user="postgres", 
-                        password="Sqlserver!2", 
-                        host="10.0.2.201", port="5432")  #127.0.0.1  
+                        password="Sqlserver!2", #
+                        host="10.0.2.201", port="5432")  #  
             return connn
         except Exception as ee:
             print(f"An error occurred: {str(ee)}")
