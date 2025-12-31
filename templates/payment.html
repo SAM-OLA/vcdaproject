@@ -51,7 +51,7 @@
                                 <div class="mb-3 mt-3">
 
                                     <label for="paymentdate">Payment Date:</label><br>
-                                    <input type="text" id="paymentdate" name="paymentdate" placeholder="DD/MM/YYYY">
+                                    <input type="text" id="paymentdate" name="paymentdate" placeholder="DD/MM/YYYY" required>
                                     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                                     <script>
                                         flatpickr("#paymentdate", {
@@ -69,7 +69,7 @@
                                 </select>
                                 <div class="mb-3 mt-3">
                                     <label for="cashcollector" class="form-label">Cash Collected By</label>
-                                    <input type="text" class="form-control" id="cashcollector" placeholder="Enter Cash Collector Name" name="cashcollector" required>
+                                    <input type="text" class="form-control" id="cashcollector" placeholder="Enter Cash Collector Name" name="cashcollector" value="0" required>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Submit</button>
