@@ -75,7 +75,7 @@
                         <tbody class="table-group-divider">
                             {% if residentdata["data"] | length > 0 %}
                             {% for data1 in residentdata["data"] %}
-                            <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td></tr>
+                            <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'><a href="{{ url_for('edit_resident_profile', varphonenumber=data1[4]) }}">{{ data1[1] }}</a></font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td></tr>
                             {% endfor%}
                             {% endif %}
                         </tbody>

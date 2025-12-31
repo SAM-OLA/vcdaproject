@@ -543,6 +543,142 @@ def full_residents_list_download():
     path_to_file = "residentsfulllist.xlsx" 
     return send_file(path_to_file, as_attachment=True)
 
+@app.route('/edit_resident_profile/<varphonenumber>')
+def edit_resident_profile(varphonenumber):
+    varprofile = {}
+    try:
+        con = functionbase.connection()
+        con1 = functionbase.connection()
+        con2 = functionbase.connection()
+        con3 = functionbase.connection()
+        if con is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+
+        
+
+        dictdata = {}
+        dictdata3 = {}
+        cur1 = con1.cursor()
+        cur2 = con2.cursor()
+        cur3 = con3.cursor()
+
+        sql1 = "select title,surname,firstname, address1,address2,phonenumber,index from houseowner order by 2"
+        sql2 = "select groupname,address,unit,groupid from psparrangement order by 1"
+        sql3 = " select title,surname, firstname, othernames, phonenumber from register where status='ACTIVE' order by 2"
+        
+        cur1.execute(sql1)
+        cur2.execute(sql2)
+        cur3.execute(sql3)
+
+        myresult1 = [item for item in cur1.fetchall()]
+        myresult2 = [item for item in cur2.fetchall()]
+        myresult3 = [item for item in cur3.fetchall()]
+            
+        dictdata = myresult1
+        dictdata2 = myresult2
+        dictdata3 = myresult3
+        cur1.close()
+        cur2.close()
+        cur3.close()
+        con1.close()
+        con2.close()
+        con3.close()
+        
+
+        cur = con.cursor() 
+        sql = f"SELECT * from register where phonenumber='{varphonenumber}'"
+        #param = (varphonenumber)
+        cur.execute(sql)
+        myresult = cur.fetchone()
+        varprofile['title'] = myresult[1]
+        varprofile['surname'] = myresult[2]
+        varprofile['firstname'] = myresult[3]
+        varprofile['othernames'] = myresult[4]
+        varprofile['houseaddress'] = myresult[5]
+        varprofile['apartmenttypecode'] = myresult[6]
+        varprofile['groupid'] = myresult[7]
+        varprofile['phonenumber'] = myresult[8]
+        varprofile['acct_number'] = myresult[9]
+        varprofile['status'] = myresult[10]
+        varprofile['landlordid'] = int(myresult[11])
+        return render_template("edit_resident_profile.html", profile=varprofile, landlordinfo = dictdata, groupinfo = dictdata2, residentinfo = dictdata3)
+    except Exception as ep:
+        return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="login")
+
+
+@app.route("/updateresidentregister", methods=["GET", "POST"])
+def updateresidentregister():
+    if request.method == "POST":
+        # CREATE RECORD
+        
+        conn1 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+  
+        cur1 = conn1.cursor() 
+  
+        title=request.form["title"],
+        surname=request.form["surname"],
+        firstname=request.form["firstname"],
+        othernames=request.form["othername"],
+        housenumber=request.form["housenumber"],
+        houseaddress=request.form["houseaddress"],
+        phonenumber=request.form["mobilenumber"]
+    
+        
+        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address1=%s, address2=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,housenumber,houseaddress,phonenumber))
+     
+        try:
+            # commit the changes 
+            conn1.commit()
+            # close the cursor and connection 
+            cur1.close() 
+            conn1.close() 
+            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl="full_residents_list")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return render_template("failure.html", messageText = "Update Error", redirecturl="login")
+
+@app.route("/updateresidentprofile", methods=["GET", "POST"])
+def updateresidentprofile():
+    if request.method == "POST":
+        # CREATE RECORD
+        
+        conn1 = functionbase.connection()
+
+        if conn1 is None:
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
+  
+        cur1 = conn1.cursor() 
+  
+        title=request.form["title"],
+        surname=request.form["surname"],
+        firstname=request.form["firstname"],
+        othernames=request.form["othername"],
+        houseaddress=request.form["houseaddress"],
+        apartmenttype=request.form["apartmenttype"],
+        landlordid=request.form["landlordid"],
+        pspgroups=request.form["pspgroups"],
+        status=request.form["status"],
+        phonenumber=request.form["phonenumber"],
+        mobilenumber=request.form["mobilenumber"]
+    
+        
+        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, groupid=%s, acct_number=%s, status=%s, landlordid=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,houseaddress,apartmenttype,pspgroups,phonenumber,status,landlordid,mobilenumber))
+     
+        try:
+            # commit the changes 
+            conn1.commit()
+            # close the cursor and connection 
+            cur1.close() 
+            conn1.close() 
+            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl="full_residents_list")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+            return render_template("failure.html", messageText = "Update Error", redirecturl="login")
+
+
 @app.route('/landlord_residents_list/<varlandlordid>', methods=["GET", "POST"])
 def landlord_residents_list(varlandlordid):
     # CREATE RECORD
@@ -611,18 +747,18 @@ def payments_list():
         
         cur1 = con1.cursor() 
         dictdata = {}
-        sql1 = "select register.title, register.surname, register.firstname, register.address,register.phonenumber,amount,cast(replace(amount,',','') as decimal),paymenttransactions.status,paymenttransactions.id from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='ESTATE DUE' and paymenttransactions.status != 'REJECTED' and register.phonenumber != '0' order by surname";    
+        sql1 = "select register.title, register.surname, register.firstname, register.address,register.phonenumber,paymenttransactions.paymentdate,amount,cast(replace(amount,',','') as decimal),paymenttransactions.status,paymenttransactions.id from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='ESTATE DUE' and paymenttransactions.status != 'REJECTED' and register.phonenumber != '0' order by surname";    
         cur1.execute(sql1)
    
         numrows = cur1.rowcount
         print(f'row numbers is {numrows}')
         if(numrows > 0):
             myresult1 = [item for item in cur1.fetchall()]
-            totallist = [val[6] for val in myresult1]
+            totallist = [val[7] for val in myresult1]
             total = sum(totallist)
             #print(total)
             dictdata['data'] = myresult1
-            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber', 'Amount', 'Status', 'ID','ID2'])
+            df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber', 'PaymentDate', 'Amount', 'Status', 'ID','ID2'])
             df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
             with pd.ExcelWriter('paymentlist.xlsx') as writer:
                 df_modified.to_excel(writer,sheet_name='payment list')
@@ -633,9 +769,10 @@ def payments_list():
                 worksheet.column_dimensions['B'].width = 8
                 worksheet.column_dimensions['C'].width = 20
                 worksheet.column_dimensions['D'].width = 20
-                worksheet.column_dimensions['E'].width = 25
+                worksheet.column_dimensions['E'].width = 20
                 worksheet.column_dimensions['F'].width = 15
                 worksheet.column_dimensions['G'].width = 15
+                worksheet.column_dimensions['H'].width = 15
             cur1.close() 
             con1.close() 
             return render_template("payments_list.html", residentdata = dictdata,sumtotal=format(total,","))
@@ -659,6 +796,7 @@ def approve_payments():
     cur1 = conn1.cursor() 
     btnapprove = request.form.get('approve')
     btnreject = request.form.get('reject')
+    btnok = request.form.get('btngo')
     
     if btnapprove == 'approve':
         selected_items = request.form.getlist('status')
@@ -681,7 +819,7 @@ def approve_payments():
             print(f"An error occurred: {str(e)}")
             return render_template("failure.html", messageText = "Approve Error", redirecturl="login")
 
-    if btnreject == 'reject':
+    elif btnreject == 'reject':
         selected_items = request.form.getlist('status')
         integer_selected_items = tuple([int(s) for s in selected_items])
         #print(integer_selected_items)     
@@ -701,13 +839,54 @@ def approve_payments():
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             return render_template("failure.html", messageText = "Reject Error", redirecturl="login")
+    if btnok == 'go':
+        startdate = request.form.get('startdate')
+        enddate = request.form.get('enddate')
+        tx_type = request.form.get('transtype')
+        try:
+            con1 = functionbase.connection()
+            if con1 is None:
+                return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
         
-    
-
-
-
-    
+            cur1 = con1.cursor() 
+            dictdata = {}
+            sql1 = f"select register.title, register.surname, register.firstname, register.address,register.phonenumber,paymenttransactions.paymentdate,amount,cast(replace(amount,',','') as decimal),paymenttransactions.status,paymenttransactions.id from register inner join paymenttransactions ON register.phonenumber = paymenttransactions.phonenumber where paymenttransactions.transtype='{tx_type}' and to_date(paymenttransactions.paymentdate,'dd/mm/yyyy') >= to_date('{startdate}','dd/mm/yyyy') and to_date(paymenttransactions.paymentdate,'dd/mm/yyyy') <= to_date('{enddate}','dd/mm/yyyy') and paymenttransactions.status != 'REJECTED' and register.phonenumber != '0' order by to_date(paymenttransactions.paymentdate,'dd/mm/yyyy')";    
+            #print(sql1)
+            cur1.execute(sql1)
    
+            numrows = cur1.rowcount
+            print(f'row numbers is {numrows}')
+            if(numrows > 0):
+                myresult1 = [item for item in cur1.fetchall()]
+                totallist = [val[7] for val in myresult1]
+                total = sum(totallist)
+                #print(total)
+                dictdata['data'] = myresult1
+                df = pd.DataFrame(dictdata['data'], columns=['Title', 'Surname', 'Firstname', 'Address', 'Phonenumber', 'PaymentDate', 'Amount', 'Status', 'ID','ID2'])
+                df_modified = df.drop(['Status', 'ID','ID2'], axis=1) 
+                with pd.ExcelWriter('paymentlist.xlsx') as writer:
+                    df_modified.to_excel(writer,sheet_name='payment list')
+                    workbook = writer.book
+                    worksheet = writer.sheets['payment list']
+                    # Set width for column A (index 0) to 20
+                    worksheet.column_dimensions['A'].width = 7
+                    worksheet.column_dimensions['B'].width = 8
+                    worksheet.column_dimensions['C'].width = 20
+                    worksheet.column_dimensions['D'].width = 20
+                    worksheet.column_dimensions['E'].width = 20
+                    worksheet.column_dimensions['F'].width = 15
+                    worksheet.column_dimensions['G'].width = 15
+                    worksheet.column_dimensions['H'].width = 15
+                cur1.close() 
+                con1.close() 
+                return render_template("payments_list.html", residentdata = dictdata,sumtotal=format(total,","))
+            else:
+                return render_template("failure.html", messageText = f"No Data For the Selected Period", redirecturl="payments_list")
+        except Exception as ep:
+            return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="payments_list")
+        
+      
+    
  
 @app.route('/outstanding_list', methods=["GET", "POST"])
 def outstanding_list():
@@ -796,6 +975,7 @@ def outstanding_list_download():
     path_to_file = "outstandinglist.xlsx" 
     return send_file(path_to_file, as_attachment=True)
 
+
 @app.route('/landlord_list', methods=["GET", "POST"])
 def landlord_list():
     # CREATE RECORD
@@ -820,6 +1000,7 @@ def landlord_list():
             return render_template("landlord_list.html", residentdata = dictdata)
     except Exception as ep:
             return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="admin")
+
 
 
 @app.route('/edit_landlord_profile/<varphonenumber>')

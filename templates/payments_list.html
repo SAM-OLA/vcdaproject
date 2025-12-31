@@ -3,6 +3,7 @@
 <br />
 <br />
 <br />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 &nbsp;&nbsp;<a href={{ url_for('admin_dashboard') }}  class="bi bi-arrow-left-circle-fill">Go Back</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <div class="px-1 pt-2 my-2 text-center border-bottom">
     <h3>Dues Payment List</h3>
@@ -16,8 +17,34 @@
             <div class="col-sm-auto col-sm-auto col-sm-auto">
                 <div class="my-5">
                     <!--<div class="table-container">-->
-                    <form  method="POST" action="{{ url_for('approve_payments') }}">
-                        <table id="paymentTable"> <!-- class="table table-striped"-->
+                    <form method="POST" action="{{ url_for('approve_payments') }}">
+                        <div class="mb-3 mt-3 border border-secondary">
+
+                            <label for="startdate">Start Date:</label>&emsp;&emsp;&emsp;&nbsp;&nbsp;<label for="enddate">End Date:</label>&nbsp;&nbsp;&nbsp;&emsp;&emsp;&emsp;<label for="txtype">Type</label><br>
+                            <input type="text" id="startdate" name="startdate" placeholder="DD/MM/YYYY" size="10">
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                            <script>
+                                flatpickr("#startdate", {
+                                    dateFormat: "d/m/Y",
+                                    allowInput: true
+                                });
+                            </script>&nbsp;&nbsp;
+                            <input type="text" id="enddate" name="enddate" placeholder="DD/MM/YYYY" size="10">
+                            <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                            <script>
+                                flatpickr("#enddate", {
+                                    dateFormat: "d/m/Y",
+                                    allowInput: true
+                                });
+                            </script>&nbsp;&nbsp;
+                            <select name="transtype">
+                                <option selected>ESTATE DUE</option>
+                                <option>OTHER FEES</option>
+                            </select>&nbsp;&nbsp;
+                            <button class="btn btn-success" name="btngo" value="go">GO</button>
+                        </div>
+                        <table id="paymentTable" class="table table-striped" >
+                            <!-- class="table table-striped"-->
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -26,6 +53,7 @@
                                     <th>Firstname</th>
                                     <th>Address</th>
                                     <th>Phonenumber</th>
+                                    <th>Pymt Date</th>
                                     <th>Amount (=N=)</th>
                                     <th><button class="btn btn-success" name="approve" value="approve">approve</button><br /><button class="btn btn-danger" name="reject" value="reject">reject</button></th>
                                 </tr>
@@ -33,10 +61,10 @@
                             <tbody class="table-group-divider">
                                 {% if residentdata["data"] | length > 0 %}
                                 {% for data1 in residentdata["data"] %}
-                                {% if data1[7] == "APPROVED" %}
-                                <tr style="background-color: #00ff90;"><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}"></input></td></tr>
+                                {% if data1[8] == "APPROVED" %}
+                                <tr style="background-color: #00ff90;"><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td align="right" class="fw-normal">{{ data1[6] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}" /></td></tr>
                                 {% else %}
-                                <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}"></input></td></tr>
+                                <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td align="right" class="fw-normal">{{ data1[6] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}" /></td></tr>
                                 {% endif %}
                                 {% endfor%}
                                 {% endif %}
@@ -48,6 +76,7 @@
                                     <th>&nbsp;&nbsp;-</th>
                                     <th>&nbsp;&nbsp;-</th>
                                     <th>&nbsp;&nbsp;-</th>
+                                    <th>&nbsp;&nbsp;&nbsp;&nbsp;-</th>
                                     <th>&nbsp;&nbsp;&nbsp;&nbsp;-</th>
                                     <th>&nbsp;&nbsp;&nbsp;&nbsp;-</th>
                                     <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ sumtotal }}</th>
