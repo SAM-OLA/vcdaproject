@@ -148,6 +148,7 @@ def login_confirm():
         con4 = functionbase.connection()
         con5 = functionbase.connection()
         con6 = functionbase.connection()
+        con7 = functionbase.connection()
 
         if con1 is None:
             return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="login")
@@ -158,6 +159,7 @@ def login_confirm():
         cur4 = con4.cursor() 
         cur5 = con5.cursor() 
         cur6 = con6.cursor() 
+        cur7 = con7.cursor() 
 
         phonenumber=request.form["phonenumber"],
         password=request.form["password"]
@@ -166,7 +168,8 @@ def login_confirm():
         sql1 = 'SELECT * from users where username=%s and password=crypt(%s,password)'
         sql2 = 'SELECT * from register where phonenumber=%s'      
         sql5 = "SELECT * from paymenttransactions where groupid=%s and transtype=%s and TO_NUMBER(amount,'9G99999D99') <> 0.00 order by To_DATE(paymentdate,'DD/MM/YYYY')"
-        0
+        sql7 = 'SELECT * from outstanding2025 where phonenumber=%s'      
+        #0
         param = (phonenumber,password)
         param2 = (phonenumber)
 
@@ -188,17 +191,29 @@ def login_confirm():
             param3 = (myresult2[9],"ESTATE DUE")
             cur3.execute(sql3,param3)
             myresult3 = [item for item in cur3.fetchall()]
+            cur7.execute(sql7,param2)
+            numrows7 = cur7.rowcount
+            if numrows7 > 0:
+                myresult7 = [item for item in cur7.fetchone()]
             cur1.close() 
             con1.close() 
             cur2.close() 
             con2.close() 
             cur3.close() 
             con3.close() 
+            cur7.close() 
+            con7.close() 
             totalpaid=0
-            #print(myresult3)
+            #print(myresult7)
             for payamt in myresult3:
                 totalpaid = totalpaid + float(payamt[3].replace(',',''))
                 #payamt[3] = f'{float(payamt[3]):,}'
+
+            amttopaynormal = float(myresult4[3])
+            if numrows7 > 0:
+                outstandingpayments = float(myresult7[2].replace(',',''))
+            else:
+                outstandingpayments = 0.00
 
             dictdata['title'] = myresult2[1]
             dictdata['surname'] = myresult2[2]
@@ -209,11 +224,13 @@ def login_confirm():
             dictdata['phonenumber'] = myresult2[8]
             dictdata['apartmenttypecode'] = myresult4[1]
             dictdata['apartmenttype'] = myresult4[2]
-            dictdata['apartmenttypeamount'] = f'{myresult4[3]:,}'
+            dictdata['apartmenttypeamount'] = f'{amttopaynormal + outstandingpayments:,}'
             dictdata['totalpaid'] = f'{totalpaid:,}'
-            dictdata['balancetopay'] = f'{float(myresult4[3]) - totalpaid:,}'
-            dictdata['outstandingpay'] = True if float(myresult4[3]) - totalpaid > 0 else False
+            dictdata['balancetopay'] = f'{amttopaynormal + outstandingpayments - totalpaid:,}'
+            dictdata['outstandingpay'] = True if amttopaynormal - totalpaid > 0 else False
             dictdata['payments'] = myresult3
+            if numrows7 > 0:
+                dictdata['outstandingpayments'] = f'{outstandingpayments:,}'
         
             param5 = (int(dictdata['groupid']),"OTHER FEES")
             cur5.execute(sql5,param5)

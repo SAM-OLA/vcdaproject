@@ -96,13 +96,16 @@ Input Payment
                     {% set my_admin_list = ['2348034102329','2348037125979','2348096661124','2348028401202','2348032400317','2348033676290','2348034960305','2348023610501','2348035276474','2348038510658','2347035699285'] %}
                     {% if customerdata['phonenumber'] in my_admin_list %}
                     <a href="{{ url_for('admin_dashboard')}}" class="btn btn-success">Use Your Admin Role</a>
-    {% endif%}
+                    {% endif%}
 
-</td>
+                </td>
             </tr>
             <tr><td colspan="4" align="center"><h6>{{ customerdata["address"] }}</h6></td></tr>
-            <tr><td colspan="4" align="center"><h6><u>Estate Dues 2025</u></h6></td></tr>
-            <tr><td>Amount To Pay : </td><td></td><td>=N= {{ customerdata["apartmenttypeamount"] }}</td><td></td></tr>
+            <tr><td colspan="4" align="center"><h6><u>Estate Dues 2026</u></h6></td></tr>
+            {% if customerdata["outstandingpayments"] %}
+            <tr><td>Balance 2025 : </td><td></td><td>=N={{ customerdata["outstandingpayments"] }}</td><td></td></tr>
+            {% endif%}
+            <tr><td>Amount To Pay : </td><td></td><td class="text-bg-info p-3">=N= {{ customerdata["apartmenttypeamount"] }}</td><td></td></tr>
             <tr><td class="fw-normal">Apartment Type : </td><td class="fw-normal"></td><td>{{ customerdata["apartmenttype"] }}</td><td></td></tr>
             <tr><td colspan="4" align="center"><h6><u>Payment History</u></h6></td></tr>
             {% for data in customerdata["payments"] %}
@@ -111,9 +114,9 @@ Input Payment
 
             <tr><td class="fw-normal">Total Paid: </td><td></td><td class="fw-normal"><font color='green'>=N={{ customerdata["totalpaid"] }}</font></td></tr>
             {% if customerdata["outstandingpay"] %}
-            <tr><td>Balance to Pay: </td><td></td><td><font color='red'><b>=N={{ customerdata["balancetopay"] }}</b></font></td></tr>
+            <tr><td>Balance to Pay: </td><td></td><td class="text-bg-danger p-3">=N={{ customerdata["balancetopay"] }}</td></tr>
             {% else %}
-            <tr><td>Balance to Pay: </td><td></td><td><font color='blue'><b>=N={{ customerdata["balancetopay"] }}</b></font></td></font></td></tr>
+            <tr><td>Balance to Pay: </td><td></td><td class="text-bg-success p-3">=N={{ customerdata["balancetopay"] }}</td></tr>
             {% endif%}
             <!--<tr><td colspan="4" align="center"><h6><u>Other Fees (PSP Fees)</u></h6></td></tr>-->
             <tr><td colspan="4" align="center"><h6><u>Other Fees (PSP Fees)</u></h6></td></tr>
