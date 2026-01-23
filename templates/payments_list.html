@@ -62,9 +62,9 @@
                                 {% if residentdata["data"] | length > 0 %}
                                 {% for data1 in residentdata["data"] %}
                                 {% if data1[8] == "APPROVED" %}
-                                <tr style="background-color: #00ff90;"><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td align="right" class="fw-normal">{{ data1[6] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}" /></td></tr>
+                                <tr  class="table-success"><td>{{ loop.index }} </td><td>{{ data1[0] }}</td><td>{{ data1[1] }}</td><td>{{ data1[2] }}</td><td>{{ data1[3] }}</td><td>{{ data1[4] }}</td><td align="right">{{ data1[5] }}</td><td align="right">{{ data1[6] }}</td><td align="center"><input type="checkbox" name="status" value="{{ data1[9] }}" /></td></tr>
                                 {% else %}
-                                <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td align="right" class="fw-normal">{{ data1[6] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[8] }}" /></td></tr>
+                                <tr><td class="fw-normal">{{ loop.index }} </td><td class="fw-normal">{{ data1[0] }}</td><td class="fw-normal"><font color='green'>{{ data1[1] }}</font></td><td>{{ data1[2] }}</td><td class="fw-normal">{{ data1[3] }}</td><td class="fw-normal">{{ data1[4] }}</td><td align="right" class="fw-normal">{{ data1[5] }}</td><td align="right" class="fw-normal">{{ data1[6] }}</td><td class="fw-normal" align="center"><input type="checkbox" name="status" value="{{ data1[9] }}" /></td></tr>
                                 {% endif %}
                                 {% endfor%}
                                 {% endif %}

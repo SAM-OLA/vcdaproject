@@ -227,7 +227,7 @@ def login_confirm():
             dictdata['apartmenttypeamount'] = f'{amttopaynormal + outstandingpayments:,}'
             dictdata['totalpaid'] = f'{totalpaid:,}'
             dictdata['balancetopay'] = f'{amttopaynormal + outstandingpayments - totalpaid:,}'
-            dictdata['outstandingpay'] = True if amttopaynormal - totalpaid > 0 else False
+            dictdata['outstandingpay'] = True if amttopaynormal + outstandingpayments - totalpaid > 0 else False
             dictdata['payments'] = myresult3
             if numrows7 > 0:
                 dictdata['outstandingpayments'] = f'{outstandingpayments:,}'
@@ -817,8 +817,10 @@ def approve_payments():
     
     if btnapprove == 'approve':
         selected_items = request.form.getlist('status')
+        print('#'*30)
+        print(selected_items)
         integer_selected_items = tuple([int(s) for s in selected_items])
-        #print(integer_selected_items)     
+        print(integer_selected_items)     
         if len(integer_selected_items) > 1:
             strupdateQuery = f"UPDATE paymenttransactions SET status='APPROVED' WHERE id IN {integer_selected_items}"
         elif len(integer_selected_items) ==1:
