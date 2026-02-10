@@ -65,8 +65,8 @@ def add():
         dateregistered = f'{today.strftime("%d")}/{today.strftime("%m")}/{today.strftime("%Y")} {today.strftime("%H")}:{today.strftime("%M")}:{today.strftime("%S")}'
         cur1.execute( 
         '''INSERT INTO register 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status,landlordid) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s,%s)''', 
-        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE','00')) 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,acct_number,status,landlordid, accesscode) VALUES (%s,%s,%s, %s,%s, %s,%s,%s,%s,%s,%s,%s)''', 
+        (title,surname, firstname,othernames,address,apartmenttype,groupid,phonenumber,phonenumber,'ACTIVE','00','')) 
         
         # Define the password to be hashed
         password = 'resident'
@@ -189,9 +189,12 @@ def login_confirm():
             #myresult3 = cur3.fetchall()
             sql3 = "SELECT * from paymenttransactions where phonenumber=%s and transtype=%s order by To_DATE(paymentdate,'DD/MM/YYYY')"
             param3 = (myresult2[9],"ESTATE DUE")
+            
             cur3.execute(sql3,param3)
             myresult3 = [item for item in cur3.fetchall()]
-            cur7.execute(sql7,param2)
+            param7 = (myresult2[9],)
+            #print(param7)
+            cur7.execute(sql7,param7)
             numrows7 = cur7.rowcount
             if numrows7 > 0:
                 myresult7 = [item for item in cur7.fetchone()]
@@ -618,6 +621,7 @@ def edit_resident_profile(varphonenumber):
         varprofile['acct_number'] = myresult[9]
         varprofile['status'] = myresult[10]
         varprofile['landlordid'] = int(myresult[11])
+        varprofile['accesscode'] = myresult[12]
         return render_template("edit_resident_profile.html", profile=varprofile, landlordinfo = dictdata, groupinfo = dictdata2, residentinfo = dictdata3)
     except Exception as ep:
         return render_template("failure.html", messageText = f"Error Occured -  {str(ep)}", redirecturl="login")
@@ -677,12 +681,13 @@ def updateresidentprofile():
         apartmenttype=request.form["apartmenttype"],
         landlordid=request.form["landlordid"],
         pspgroups=request.form["pspgroups"],
+        accesscode=request.form["accesscode"],
         status=request.form["status"],
         phonenumber=request.form["phonenumber"],
         mobilenumber=request.form["mobilenumber"]
     
         
-        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, groupid=%s, acct_number=%s, status=%s, landlordid=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,houseaddress,apartmenttype,pspgroups,phonenumber,status,landlordid,mobilenumber))
+        cur1.execute("UPDATE register SET title=%s, surname=%s, firstname=%s, othernames=%s, address=%s, apartmenttype=%s, groupid=%s, acct_number=%s, status=%s, landlordid=%s, accesscode=%s WHERE phonenumber=%s",(title,surname,firstname,othernames,houseaddress,apartmenttype,pspgroups,phonenumber,status,landlordid,accesscode,mobilenumber))
      
         try:
             # commit the changes 
@@ -1122,8 +1127,8 @@ def add_landlord():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug=True)
-    #app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
+    #app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
 
 
 '''
