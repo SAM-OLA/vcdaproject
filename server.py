@@ -96,9 +96,9 @@ def add():
             conn1.close() 
             conn2.close() 
             conn3.close() 
-            return render_template("success.html", messageText = "Data Successfully Saved", redirecturl = "register")
+            return render_template("success.html", messageText = "Registration Successfully Saved", redirecturl = "register")
         except:
-            return render_template("failure.html", messageText = "Data Error - Phone Number Already Exists", redirecturl = "register")
+            return render_template("failure.html", messageText = "Error - You have been Registered Already. Please See the EXCOS for your password", redirecturl = "register")
 
 @app.route("/updateregister", methods=["GET", "POST"])
 def updateregister():
