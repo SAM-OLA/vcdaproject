@@ -45,6 +45,8 @@ def add():
 
         title=request.form["title"],
         surname=request.form["surname"],
+        #newsurname = surname[0].title()
+        #surname = (newsurname,)
         firstname=request.form["firstname"],
         othernames=request.form["othername"],
         address=request.form["houseaddress"],
@@ -96,9 +98,9 @@ def add():
             conn1.close() 
             conn2.close() 
             conn3.close() 
-            return render_template("success.html", messageText = "Registration Successfully Saved", redirecturl = "register")
+            return render_template("success.html", messageText = "Registration Successfully Saved. Contact the EXCOS for your password", redirecturl = "register")
         except:
-            return render_template("failure.html", messageText = "Error - You have been Registered Already. Please See the EXCOS for your password", redirecturl = "register")
+            return render_template("failure.html", messageText = "Error - You have been Registered Already. Contact the EXCOS for your password", redirecturl = "register")
 
 @app.route("/updateregister", methods=["GET", "POST"])
 def updateregister():
@@ -1127,8 +1129,8 @@ def add_landlord():
 
 
 if __name__ == '__main__':
-    #app.run(host="0.0.0.0", port=5000, debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
+    app.run(host="0.0.0.0", port=8080, debug=True)
+    #app.run(host="0.0.0.0", port=5000, debug=True, ssl_context='adhoc')
 
 
 '''
