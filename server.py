@@ -32,12 +32,12 @@ mail.init_app(app)
 def add():
     if request.method == "POST":
         # CREATE RECORD
-        conn1 = functionbase.connection()
+        conn1, con1 = functionbase.connection()
         conn2 = functionbase.connection()
         conn3 = functionbase.connection()
 
         if conn1 is None:
-            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached",redirecturl="register")
+            return render_template("failure.html", messageText = f"Connection Error!!! Server Cannot be reached {con1}",redirecturl="register")
 
         cur1 = conn1.cursor() 
         cur2 = conn2.cursor() 

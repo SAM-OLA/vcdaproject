@@ -2,6 +2,8 @@ import psycopg2
 from flask import request
 import sqlite3
 
+from traitlets import This
+errorrr = "No Error"
 def connection():
 
         try:
@@ -12,7 +14,10 @@ def connection():
             return connn
         except Exception as ee:
             print(f"An error occurred: {str(ee)}")
-            return None
+            errorrr = str(ee)
+            return None, errorrr
+
+
 def connectionlite():
     connn = sqlite3.connect("victoryestate.db")
     return connn
