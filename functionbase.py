@@ -15,7 +15,7 @@ def connection():
         except Exception as ee:
             print(f"An error occurred: {str(ee)}")
             errorrr = str(ee)
-            return None, errorrr
+            return None
 
 def connect_error():
     error_string = errorrr
