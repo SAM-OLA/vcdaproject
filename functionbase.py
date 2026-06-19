@@ -1,7 +1,6 @@
 import psycopg2
 from flask import request
 import sqlite3
-
 errorrr = "No Error"
 def connection():
 
@@ -14,7 +13,7 @@ def connection():
         except Exception as ee:
             print(f"An error occurred: {str(ee)}")
             errorrr = str(ee)
-            return None
+            return None, errorrr
 
 def connect_error():
     error_string = errorrr
